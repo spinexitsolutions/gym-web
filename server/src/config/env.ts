@@ -58,6 +58,8 @@ const schema = z.object({
   MAX_MODEL_MB: z.coerce.number().min(1).max(50).default(15),
 
   JOBS_ENABLED: bool(true),
+  /** Login/register/reset attempts per IP per 15 minutes. */
+  AUTH_RATE_LIMIT: z.coerce.number().int().min(5).max(10000).default(30),
 });
 
 export type Env = z.infer<typeof schema>;

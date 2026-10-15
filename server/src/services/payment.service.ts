@@ -167,20 +167,23 @@ export async function capturePayment(input: {
   startDate?: Date;
 }) {
   const filter = input.paymentDocId ? { _id: input.paymentDocId } : { orderId: input.orderId };
+  // Amount check happens outside the transaction so the "flagged" state is persisted.
+  if (input.remote) {
+    const pre = await PaymentModel.findOne(filter).select('amountMinor currency status').lean();
+    if (!pre) throw AppError.notFound('Payment');
+    if (!['captured', 'refunded', 'partially_refunded'].includes(pre.status) && (input.remote.amountMinor !== pre.amountMinor || input.remote.currency !== pre.currency)) {
+      await PaymentModel.updateOne({ _id: pre._id, status: { $in: ['created', 'pending'] } }, { $set: { status: 'failed', failureReason: 'Amount mismatch — flagged for review', providerPaymentId: input.remote.id } });
+      logger.error({ payment: String(pre._id) }, 'Payment amount mismatch');
+      throw AppError.badRequest('Payment amount mismatch');
+    }
+  }
   const result = await withTransaction(async (session) => {
     const existing = await PaymentModel.findOne(filter).session(session ?? null);
     if (!existing) throw AppError.notFound('Payment');
     if (['captured', 'refunded', 'partially_refunded'].includes(existing.status)) return { payment: existing, alreadyProcessed: true };
-    if (input.remote) {
-      if (input.remote.amountMinor !== existing.amountMinor || input.remote.currency !== existing.currency) {
-        await PaymentModel.updateOne({ _id: existing._id }, { $set: { status: 'failed', failureReason: 'Amount mismatch — flagged for review' } }, { session });
-        logger.error({ payment: String(existing._id) }, 'Payment amount mismatch');
-        throw AppError.badRequest('Payment amount mismatch');
-      }
-    }
     const receiptNumber = await nextReceiptNumber(session);
     const claimed = await PaymentModel.findOneAndUpdate(
-      { _id: existing._id, status: { $in: ['created', 'pending', 'failed'] } },
+      { _id: existing._id, status: { $in: ['created', 'pending', 'failed'] }, failureReason: { $not: /mismatch/i } },
       {
         $set: {
           status: 'captured',

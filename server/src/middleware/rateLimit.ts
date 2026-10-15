@@ -1,5 +1,5 @@
 import rateLimit from 'express-rate-limit';
-import { isTest } from '../config/env';
+import { env, isTest } from '../config/env';
 
 const handler = (_req: unknown, res: { status: (n: number) => { json: (b: unknown) => void } }) =>
   res.status(429).json({ error: { code: 'RATE_LIMITED', message: 'Too many requests, please try again later' } });
@@ -10,7 +10,7 @@ const make = (windowMs: number, limit: number) =>
 /** General API limiter. */
 export const apiLimiter = make(60_000, 300);
 /** Login / register / password reset — per IP. Account lockout is enforced separately. */
-export const authLimiter = make(15 * 60_000, 30);
+export const authLimiter = make(15 * 60_000, env.AUTH_RATE_LIMIT);
 /** Public forms (trial, contact, newsletter). */
 export const publicFormLimiter = make(60 * 60_000, 20);
 /** Upload endpoints. */
