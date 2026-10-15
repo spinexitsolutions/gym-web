@@ -1,0 +1,27 @@
+{
+  "name": "apex-athletics",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Luxury 3D gym website with a full gym management system (CMS, memberships, payments, bookings).",
+  "workspaces": [
+    "shared",
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,client -c yellow,cyan \"npm run dev -w server\" \"npm run dev -w client\"",
+    "build": "npm run build -w server && npm run build -w client",
+    "start": "npm run start -w server",
+    "typecheck": "npm run typecheck -w shared && npm run typecheck -w server && npm run typecheck -w client",
+    "lint": "npm run lint -w server && npm run lint -w client",
+    "test": "npm run test -w shared && npm run test -w server && npm run test -w client",
+    "seed": "npm run seed -w server",
+    "create-admin": "npm run create-admin -w server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "engines": {
+    "node": ">=20.11"
+  }
+}
