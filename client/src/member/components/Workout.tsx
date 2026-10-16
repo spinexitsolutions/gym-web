@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 import { useMutation, useQueryClient, type QueryKey } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Clock, Dumbbell, Minus, Plus, Timer, Trash2 } from 'lucide-react';
@@ -90,7 +90,7 @@ export function WorkoutLogForm({ open, onClose, memberPath, plans, initial, inva
 
   const plan = plans.find((p) => p._id === planId);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!open) return;
     const p = initial ? plans.find((x) => x._id === initial.planId) : undefined;
     setPlanId(p?._id ?? '');

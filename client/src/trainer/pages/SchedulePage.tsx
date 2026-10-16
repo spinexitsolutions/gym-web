@@ -98,8 +98,8 @@ export default function TrainerSchedulePage() {
                   it.kind === 'class' ? (
                     <li key={it.c._id} className={cn('card overflow-hidden', it.c.status === 'cancelled' && 'opacity-60')}>
                       <button className="flex w-full items-center gap-4 p-4 text-left" aria-expanded={open === it.c._id} onClick={() => setOpen(open === it.c._id ? null : it.c._id)} disabled={it.c.status === 'cancelled'}>
-                        <div className="w-16 shrink-0">
-                          <p className="font-display text-lg font-semibold tabular-nums">{fmtTime(it.c.startsAt)}</p>
+                        <div className="w-20 shrink-0">
+                          <p className="whitespace-nowrap font-display text-lg font-semibold tabular-nums">{fmtTime(it.c.startsAt)}</p>
                           <p className="text-xs text-muted">{Math.round((+new Date(it.c.endsAt) - +new Date(it.c.startsAt)) / 60000)} min</p>
                         </div>
                         <div className="min-w-0 flex-1">
@@ -130,8 +130,8 @@ export default function TrainerSchedulePage() {
                     </li>
                   ) : (
                     <li key={it.s._id} className="card flex flex-wrap items-center gap-4 p-4">
-                      <div className="w-16 shrink-0">
-                        <p className="font-display text-lg font-semibold tabular-nums">{fmtTime(it.s.startsAt)}</p>
+                      <div className="w-20 shrink-0">
+                        <p className="whitespace-nowrap font-display text-lg font-semibold tabular-nums">{fmtTime(it.s.startsAt)}</p>
                         <p className="text-xs text-muted">{Math.round((+new Date(it.s.endsAt) - +new Date(it.s.startsAt)) / 60000)} min</p>
                       </div>
                       <div className="min-w-0 flex-1">

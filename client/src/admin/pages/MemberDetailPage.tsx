@@ -212,8 +212,8 @@ export default function MemberDetailPage() {
   ];
   const paymentCols: Column<PaymentView>[] = [
     { key: 'date', header: 'Date', cell: (p) => <span className="tabular-nums">{fmtDate(p.capturedAt ?? p.createdAt)}</span> },
-    { key: 'plan', header: 'Plan', cell: (p) => <span>{p.planName}<span className="block text-xs text-muted">{titleCase(p.provider)}{p.method ? ` · ${titleCase(p.method)}` : ''}</span></span> },
-    { key: 'amount', header: 'Amount', cell: (p) => <span className="tabular-nums font-medium">{money(p.amountMinor)}{p.refund && <span className="block text-xs text-danger">−{money(p.refund.amountMinor)} refunded</span>}</span> },
+    { key: 'plan', header: 'Plan', cell: (p) => <span>{p.planName}<span className="block text-xs text-muted">{titleCase(p.provider)}{p.method && p.method !== p.provider ? ` · ${titleCase(p.method)}` : ''}</span></span> },
+    { key: 'amount', header: 'Amount', cell: (p) => <span className="tabular-nums font-medium">{money(p.amountMinor)}{p.refund && p.refund.amountMinor > 0 && <span className="block text-xs text-danger">−{money(p.refund.amountMinor)} refunded</span>}</span> },
     { key: 'status', header: 'Status', cell: (p) => <StatusBadge status={p.status} /> },
     {
       key: 'actions',

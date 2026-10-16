@@ -5,7 +5,7 @@ import { cn } from '@/lib/cn';
 const ease = [0.2, 0.7, 0.2, 1] as const;
 
 /** Header block for inner pages: clears the fixed chrome, big display title, quiet atmosphere. */
-export function PageHero({ eyebrow, title, description, children, className, aside }: { eyebrow?: ReactNode; title: ReactNode; description?: ReactNode; children?: ReactNode; className?: string; aside?: ReactNode }) {
+export function PageHero({ eyebrow, title, description, children, className, aside, back }: { back?: ReactNode; eyebrow?: ReactNode; title: ReactNode; description?: ReactNode; children?: ReactNode; className?: string; aside?: ReactNode }) {
   return (
     <section className={cn('relative isolate overflow-hidden border-b border-fg/[0.06] pb-14 pt-[calc(var(--chrome-h,6rem)+3.5rem)] md:pb-20 md:pt-[calc(var(--chrome-h,6rem)+5.5rem)]', className)}>
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
@@ -14,6 +14,7 @@ export function PageHero({ eyebrow, title, description, children, className, asi
       </div>
       <div className="container grid gap-10 lg:grid-cols-12 lg:items-end">
         <motion.div className="lg:col-span-8" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease }}>
+          {back}
           {eyebrow && <p className="eyebrow mb-6">{eyebrow}</p>}
           <h1 className="text-balance font-display text-display-xl font-semibold">{title}</h1>
           {description && <p className="mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-muted">{description}</p>}

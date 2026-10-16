@@ -44,7 +44,7 @@ export default function PaymentsPage() {
     { key: 'date', header: 'Date', cell: (p) => <span className="whitespace-nowrap tabular-nums">{fmtDateTime(p.capturedAt ?? p.createdAt)}</span> },
     { key: 'member', header: 'Member', cell: (p) => <PersonCell name={p.user?.name ?? '—'} sub={p.user?.email} /> },
     { key: 'plan', header: 'Plan', hideOnMobile: true, cell: (p) => <PersonCell name={p.planName} sub={`${titleCase(p.mode)}${p.couponCode ? ` · ${p.couponCode}` : ''}`} /> },
-    { key: 'via', header: 'Via', hideOnMobile: true, cell: (p) => <span className="text-muted">{titleCase(p.provider)}{p.method ? ` · ${titleCase(p.method)}` : ''}</span> },
+    { key: 'via', header: 'Via', hideOnMobile: true, cell: (p) => <span className="text-muted">{titleCase(p.provider)}{p.method && p.method !== p.provider ? ` · ${titleCase(p.method)}` : ''}</span> },
     {
       key: 'amount',
       header: 'Amount',
@@ -52,7 +52,7 @@ export default function PaymentsPage() {
       cell: (p) => (
         <span className="block text-right tabular-nums">
           <span className="font-medium">{money(p.amountMinor)}</span>
-          {p.refund && <span className="block text-xs text-danger">−{money(p.refund.amountMinor)}</span>}
+          {p.refund && p.refund.amountMinor > 0 && <span className="block text-xs text-danger">−{money(p.refund.amountMinor)}</span>}
         </span>
       ),
     },

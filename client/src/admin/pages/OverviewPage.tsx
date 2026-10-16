@@ -147,8 +147,8 @@ export default function OverviewPage() {
           ) : (
             <ul className="divide-y divide-line/70">
               {o.upcomingClasses.map((c) => (
-                <li key={c._id} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3">
-                  <div className="w-24 shrink-0">
+                <li key={c._id} className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-2 px-5 py-3 sm:flex">
+                  <div className="w-[4.75rem] shrink-0 sm:w-24">
                     <p className="text-xs uppercase tracking-wider text-muted">{fmtWeekday(c.startsAt)}</p>
                     <p className="font-display text-sm font-semibold tabular-nums">{fmtTime(c.startsAt)}</p>
                   </div>
@@ -159,7 +159,7 @@ export default function OverviewPage() {
                       {c.location ? ` · ${c.location}` : ''}
                     </p>
                   </div>
-                  <CapacityBar booked={c.bookedCount} capacity={c.capacity} waitlist={c.waitlistCount} className="w-32" />
+                  <CapacityBar booked={c.bookedCount} capacity={c.capacity} waitlist={c.waitlistCount} className="w-full min-w-0 sm:w-32" />
                 </li>
               ))}
             </ul>

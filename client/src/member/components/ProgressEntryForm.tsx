@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useMutation, useQueryClient, type QueryKey } from '@tanstack/react-query';
@@ -32,7 +32,8 @@ export function ProgressEntryForm({ open, onClose, memberPath, invalidate, defau
   const form = useForm<FormOut>({ resolver: zr<FormOut>(schema), defaultValues: { date: toDateInput(new Date()), notes: '' } });
   const { register, handleSubmit, formState, reset, setError } = form;
 
-  useEffect(() => {
+  // Layout effect: reset before the dialog paints so early keystrokes are never overwritten.
+  useLayoutEffect(() => {
     if (open) reset({ date: toDateInput(new Date()), notes: '', weightKg: defaultWeight ?? undefined } as FormOut);
   }, [open, reset, defaultWeight]);
 

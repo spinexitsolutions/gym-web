@@ -156,7 +156,7 @@ export function PaymentDetailModal({ payment, onClose, onRefund }: { payment: Ad
             <StatusBadge status={p.status} />
             <span className="text-sm text-muted">
               {titleCase(p.provider)}
-              {p.method ? ` · ${titleCase(p.method)}` : ''} · {titleCase(p.mode)}
+              {p.method && p.method !== p.provider ? ` · ${titleCase(p.method)}` : ''} · {titleCase(p.mode)}
             </span>
           </div>
           {p.failureReason && <Alert tone="danger" title="Failure reason">{p.failureReason}</Alert>}
@@ -177,7 +177,7 @@ export function PaymentDetailModal({ payment, onClose, onRefund }: { payment: Ad
                 { label: 'Base price', value: money(p.baseAmountMinor) },
                 { label: 'Discount', value: p.discountMinor ? `− ${money(p.discountMinor)}${p.couponCode ? ` (${p.couponCode})` : ''}` : '—' },
                 { label: 'Charged', value: <strong>{money(p.amountMinor)}</strong> },
-                { label: 'Refunded', value: p.refund ? `${money(p.refund.amountMinor)} · ${p.refund.status}` : '—' },
+                { label: 'Refunded', value: p.refund && p.refund.amountMinor > 0 ? `${money(p.refund.amountMinor)} · ${p.refund.status}` : '—' },
               ]}
             />
           </section>

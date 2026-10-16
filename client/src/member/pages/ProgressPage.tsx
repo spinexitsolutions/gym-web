@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -179,7 +179,7 @@ function GoalsSection({ goals, loading, ctx }: { goals?: Goal[]; loading: boolea
   const { register, handleSubmit, reset, setError, watch, formState } = form;
   const metric = watch('metric');
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (editing === 'new') reset({ title: '', metric: 'weight', startValue: ctx.weightKg ?? undefined, targetValue: undefined, unit: '', deadline: '', status: 'active' });
     else if (editing) reset({ ...editing, unit: editing.unit ?? '', deadline: toDateInput(editing.deadline), startValue: editing.startValue ?? undefined, targetValue: editing.targetValue ?? undefined });
   }, [editing, reset, ctx.weightKg]);

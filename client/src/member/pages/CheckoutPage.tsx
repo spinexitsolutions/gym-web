@@ -524,7 +524,9 @@ function SuccessScreen({ payment }: { payment: PaymentView }) {
           <Check className="h-10 w-10" strokeWidth={3} />
         </motion.div>
         <h1 className="relative mt-5 font-display text-2xl font-semibold md:text-3xl">{payment.amountMinor > 0 ? 'Payment confirmed' : 'Membership activated'}</h1>
-        <p className="relative mt-1 text-muted">Welcome aboard — your {payment.planName} membership is locked in.</p>
+        <p className="relative mt-1 text-muted">
+          {m?.status === 'upcoming' ? `Your ${payment.planName} membership is queued and starts automatically when your current plan ends.` : `Welcome aboard — your ${payment.planName} membership is active.`}
+        </p>
         <div className="relative mt-6 space-y-2 rounded-2xl bg-fg/[0.04] p-4 text-left text-sm">
           {m ? (
             <>
