@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CalendarX2, Check, Clock, Hourglass, MapPin, UserRound, Users } from 'lucide-react';
@@ -43,6 +43,17 @@ export default function BookClassesPage() {
     return m;
   }, [filtered]);
   const dayClasses = filtered.filter((c) => dayKey(c.startsAt) === day);
+
+  // If nothing is left today, jump to the first day that has classes (once, on first load).
+  const autoPicked = useRef(false);
+  useEffect(() => {
+    if (autoPicked.current || !classes.data) return;
+    autoPicked.current = true;
+    if (!upcoming.some((c) => dayKey(c.startsAt) === days[0] && c.status === 'scheduled')) {
+      const next = upcoming.find((c) => c.status === 'scheduled');
+      if (next) setDay(dayKey(next.startsAt));
+    }
+  }, [classes.data, upcoming, days]);
 
   const book = useMutation({
     mutationFn: (c: ClassItem) => api.post<Booking>('/bookings/class', { classId: c.id }),

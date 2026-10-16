@@ -142,7 +142,7 @@ export default function MembershipPage() {
             ))}
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className={cn('grid gap-4 sm:grid-cols-2', visiblePlans.length >= 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3')}>
             {visiblePlans.map((p, i) => {
               const isCurrent = active?.plan === p.id || active?.plan === p._id;
               return (
@@ -175,9 +175,6 @@ export default function MembershipPage() {
                         <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> <span>{b}</span>
                       </li>
                     ))}
-                    <li className="flex gap-2 text-muted">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary/60" /> {p.limits.classesPerWeek == null ? 'Unlimited classes' : `${p.limits.classesPerWeek} classes / week`}
-                    </li>
                   </ul>
                   <div className="mt-5 flex flex-col gap-2">
                     {!current ? (
