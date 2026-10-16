@@ -11,7 +11,7 @@ import { useQuality } from '../context';
 export function Kettlebell({ position, rotation, accent = true }: { position?: [number, number, number]; rotation?: [number, number, number]; accent?: boolean }) {
   const m = useMaterials();
   const q = useQuality();
-  const radial = seg(q, 64);
+  const radial = seg(q, 48);
   const geos = useMemo(() => {
     const curve = new THREE.SplineCurve(
       [
@@ -43,7 +43,7 @@ export function Kettlebell({ position, rotation, accent = true }: { position?: [
       false,
       'centripetal',
     );
-    const handle = new THREE.TubeGeometry(path, q.detail ? 96 : 48, 0.0175, seg(q, 20), false);
+    const handle = new THREE.TubeGeometry(path, q.detail ? 64 : 40, 0.0175, seg(q, 16), false);
     const horn = new THREE.CylinderGeometry(0.017, 0.026, 0.03, seg(q, 20));
     // Coloured weight band around the belly (competition bells are colour-coded).
     const band = new THREE.CylinderGeometry(0.1102, 0.1102, 0.012, radial, 1, true);

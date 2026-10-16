@@ -5,20 +5,14 @@ import { useQuality } from '../context';
 
 /**
  * Olympic bumper plate, authored in metres (Ø450 mm, 66 mm thick) around the Y axis.
- * Rubber body is a rounded lathe profile with a recessed face, raised hub ring, raised outer rim
- * and fine raised "lettering" rings; a brushed-steel hub insert sits in the centre.
+ * Rubber body is a rounded lathe profile with a recessed face, raised hub ring and raised outer rim;
+ * a label decal (weight + tick ring) reads as embossed lettering; a brushed-steel hub insert sits in the centre.
  */
 const RUBBER_PROFILE: [number, number][] = [
   [0.225, 0],
   [0.225, 0.033],
   [0.189, 0.033],
   [0.183, 0.024],
-  [0.163, 0.024],
-  [0.161, 0.0262],
-  [0.158, 0.024],
-  [0.131, 0.024],
-  [0.129, 0.0262],
-  [0.126, 0.024],
   [0.096, 0.024],
   [0.09, 0.03],
   [0.076, 0.03],
@@ -29,12 +23,6 @@ const RUBBER_PROFILE: [number, number][] = [
   [0.076, -0.03],
   [0.09, -0.03],
   [0.096, -0.024],
-  [0.126, -0.024],
-  [0.129, -0.0262],
-  [0.131, -0.024],
-  [0.158, -0.024],
-  [0.161, -0.0262],
-  [0.163, -0.024],
   [0.183, -0.024],
   [0.189, -0.033],
   [0.225, -0.033],
@@ -87,12 +75,12 @@ export interface WeightPlateProps {
 export function WeightPlate({ radius, thickness, variant = 'bumper', accent = false, position, rotation }: WeightPlateProps) {
   const m = useMaterials();
   const q = useQuality();
-  const radial = seg(q, 72);
+  const radial = seg(q, 48);
   const geo = useMemo(() => {
-    if (variant === 'steel') return { body: new THREE.LatheGeometry(roundedProfile(STEEL_PROFILE, 0.002), radial), hub: null };
+    if (variant === 'steel') return { body: new THREE.LatheGeometry(roundedProfile(STEEL_PROFILE, 0.002, 2), radial), hub: null };
     return {
-      body: new THREE.LatheGeometry(roundedProfile(RUBBER_PROFILE, q.detail ? 0.004 : 0.003, q.detail ? 4 : 2), radial),
-      hub: new THREE.LatheGeometry(roundedProfile(HUB_PROFILE, 0.0015, 2), radial),
+      body: new THREE.LatheGeometry(roundedProfile(RUBBER_PROFILE, q.detail ? 0.004 : 0.003, q.detail ? 3 : 2), radial),
+      hub: new THREE.LatheGeometry(roundedProfile(HUB_PROFILE, 0.0015, 1), radial),
     };
   }, [variant, radial, q.detail]);
   const ring = useMemo(() => new THREE.TorusGeometry(0.144, 0.0011, 6, radial * 2), [radial]);

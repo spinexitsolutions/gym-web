@@ -114,7 +114,8 @@ function Stage({ model, quality, modelKey }: { model: ResolvedModel; quality: Qu
   const size = model.def.size;
   // Frame the model inside the canvas at any aspect ratio (narrow canvases shrink it).
   const viewport = useThree((st) => st.viewport);
-  const frame = Math.min(1, (viewport.width * 0.7) / size, (viewport.height * 0.95) / (size * 0.75));
+  const narrow = useThree((st) => st.size.width) < 640;
+  const frame = Math.min(narrow ? 1.35 : 1, (viewport.width * (narrow ? 0.86 : 0.8)) / size, (viewport.height * 0.95) / (size * 0.75));
   return (
     <group ref={group} scale={frame}>
       <ModelView key={modelKey} model={model} onFit={onFit} />

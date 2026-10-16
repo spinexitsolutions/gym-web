@@ -117,11 +117,10 @@ export function HeroSection({ p }: { p: SectionProps<'hero'> }) {
 
       {/* Side stage: in flow above the copy on mobile, right half on desktop */}
       {sideMedia && (
-        <div className="relative -z-10 mt-[var(--chrome-h,6rem)] h-[42svh] min-h-[280px] w-full lg:absolute lg:inset-y-0 lg:right-0 lg:mt-0 lg:h-auto lg:w-[54%]">
+        <div className="relative -z-10 mt-[var(--chrome-h,6rem)] h-[42svh] min-h-[280px] w-full lg:absolute lg:inset-y-0 lg:right-[max(0px,calc((100vw-1480px)/2))] lg:mt-0 lg:h-auto lg:w-[min(54%,840px)]">
           {/* Soft spotlight in the theme primary colour behind the object */}
           <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 h-[70%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.12] blur-[90px] [[data-glow='false']_&]:bg-fg/[0.06]" />
           <div className="relative h-full w-full">{stage}</div>
-          <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-bg to-transparent lg:hidden" />
         </div>
       )}
 

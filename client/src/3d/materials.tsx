@@ -98,7 +98,7 @@ function makeKnurl(size: number) {
   rctx.globalCompositeOperation = 'source-over';
   rctx.fillStyle = 'rgba(70,70,70,0.55)';
   rctx.fillRect(0, 0, size, size);
-  return { normal: tex(normal, [6, 18]), roughness: tex(rc, [6, 18]) };
+  return { normal: tex(normal, [2, 6]), roughness: tex(rc, [2, 6]) };
 }
 
 /** EPDM rubber: near-black base with fine grey flecks, plus a micro-bump normal map. */
@@ -220,7 +220,7 @@ function createMaterials(quality: QualitySettings, accent: THREE.Color): Materia
       metalness: 1,
       roughness: 0.32,
       envMapIntensity: 1.2,
-      ...(knurl ? { normalMap: knurl.normal, normalScale: new THREE.Vector2(0.9, 0.9), roughnessMap: knurl.roughness } : {}),
+      ...(knurl ? { normalMap: knurl.normal, normalScale: new THREE.Vector2(1.4, 1.4), roughnessMap: knurl.roughness } : {}),
     }),
     steel: new THREE.MeshPhysicalMaterial({ color: '#bfc4ca', metalness: 1, roughness: 0.3, anisotropy: 0.7, anisotropyRotation: Math.PI / 2, roughnessMap: brushed, envMapIntensity: 1.15 }),
     bronze: new THREE.MeshPhysicalMaterial({ color: '#b48a52', metalness: 1, roughness: 0.32, envMapIntensity: 1.1 }),
@@ -229,7 +229,7 @@ function createMaterials(quality: QualitySettings, accent: THREE.Color): Materia
     frame: new THREE.MeshPhysicalMaterial({ color: '#202226', metalness: 0.55, roughness: 0.42, clearcoat: 0.4, clearcoatRoughness: 0.3 }),
     leather: new THREE.MeshPhysicalMaterial({ color: '#16171a', metalness: 0, roughness: 0.55, sheen: 0.6, sheenRoughness: 0.5, sheenColor: new THREE.Color('#4a4d55'), clearcoat: 0.25, clearcoatRoughness: 0.45 }),
     darkSteel: new THREE.MeshPhysicalMaterial({ color: '#2a2c30', metalness: 1, roughness: 0.4 }),
-    accent: new THREE.MeshStandardMaterial({ color: accent, emissive: accent, emissiveIntensity: 0.6, metalness: 0.2, roughness: 0.35, toneMapped: false }),
+    accent: new THREE.MeshStandardMaterial({ color: accent, emissive: accent, emissiveIntensity: 0.35, metalness: 0.2, roughness: 0.35 }),
     plateLabel: decal(plateLabel),
     capLabel: decal(capLabel),
   };

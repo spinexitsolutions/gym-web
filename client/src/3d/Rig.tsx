@@ -122,7 +122,7 @@ export function Rig({ config, motion, baseRotation, reducedMotion, scrollTarget,
       s.vel *= 0.92;
       moving = true;
     }
-    const sway = motion === 'sway' && auto ? Math.sin(s.clock * 0.42) * 0.4 : 0;
+    const sway = motion === 'sway' && auto ? Math.sin(s.clock * 0.42) * 0.26 : 0;
     const p = scroll.current.p;
     turn.current.rotation.y = baseRotation[1] + s.yaw + sway + p * 1.2;
 
