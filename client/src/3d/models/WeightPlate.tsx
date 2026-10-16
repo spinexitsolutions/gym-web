@@ -96,6 +96,8 @@ export function WeightPlate({ radius, thickness, variant = 'bumper', accent = fa
     };
   }, [variant, radial, q.detail]);
   const ring = useMemo(() => new THREE.TorusGeometry(0.144, 0.0011, 6, radial * 2), [radial]);
+  // Label decal covers the recessed face (r 0.096 → 0.183); planar UVs map the label canvas.
+  const label = useMemo(() => new THREE.RingGeometry(0.097, 0.1825, radial, 1), [radial]);
 
   const base = variant === 'steel' ? 0.16 : 0.225;
   const baseT = variant === 'steel' ? 0.032 : 0.066;
@@ -108,6 +110,7 @@ export function WeightPlate({ radius, thickness, variant = 'bumper', accent = fa
         <mesh geometry={geo.body} material={variant === 'steel' ? m.chrome : m.rubber} />
         {geo.hub && <mesh geometry={geo.hub} material={m.steel} />}
         {accent && variant === 'bumper' && <mesh geometry={ring} material={m.accent} position={[0, 0.0242, 0]} rotation={[Math.PI / 2, 0, 0]} />}
+        {variant === 'bumper' && <mesh geometry={label} material={m.plateLabel} position={[0, 0.0244, 0]} rotation={[-Math.PI / 2, 0, 0]} />}
       </group>
     </group>
   );

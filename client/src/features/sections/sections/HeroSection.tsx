@@ -58,13 +58,13 @@ export function HeroSection({ p }: { p: SectionProps<'hero'> }) {
       )}
 
       <div className={cn('container pointer-events-none relative flex flex-col pt-[calc(var(--chrome-h,7rem)+2.5rem)] md:pt-[calc(var(--chrome-h,7rem)+4rem)] lg:flex-1', centered ? 'flex-1 items-center text-center' : '')}>
-        <div className={cn('pointer-events-auto flex flex-1 flex-col', centered ? 'max-w-4xl items-center justify-center' : 'max-w-[40rem] lg:justify-center xl:max-w-[44rem]')}>
+        <div className={cn('pointer-events-auto flex flex-1 flex-col', centered ? 'max-w-4xl items-center justify-center' : 'max-w-[38rem] lg:justify-center xl:max-w-[42rem]')}>
           {p.eyebrow && (
             <motion.p {...enter(0)} className="eyebrow mb-6">
               {p.eyebrow}
             </motion.p>
           )}
-          <motion.h1 id="hero-heading" {...enter(1)} className="text-balance bg-gradient-to-b from-fg via-fg to-fg/55 bg-clip-text pb-2 font-display text-display-xl font-semibold text-transparent">
+          <motion.h1 id="hero-heading" {...enter(1)} className="text-balance bg-gradient-to-b from-fg via-fg to-fg/55 bg-clip-text pb-2 font-display text-[clamp(2.6rem,6.2vw,5.6rem)] font-semibold leading-[0.98] tracking-[-0.035em] text-transparent">
             {p.headline}
           </motion.h1>
           {p.subheadline && (

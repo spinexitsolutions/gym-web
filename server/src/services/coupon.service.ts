@@ -22,7 +22,8 @@ export async function applyCoupon(code: string, userId: string | Types.ObjectId,
   const uses = await CouponRedemptionModel.countDocuments({ coupon: coupon._id, user: userId });
   if (uses >= (coupon.perUserLimit ?? 1)) throw couponError('You have already used this coupon');
   if (coupon.newMembersOnly) {
-    const had = await MembershipModel.exists({ user: userId, source: { $in: ['online', 'offline'] } });
+    // Any previous non-trial membership (paid, offline or staff-granted) disqualifies.
+    const had = await MembershipModel.exists({ user: userId, 'planSnapshot.isTrial': { $ne: true } });
     if (had) throw couponError('This coupon is for new members only');
   }
   let discount = computeDiscount(coupon, plan.priceMinor);

@@ -111,7 +111,7 @@ export function CookieNotice() {
     setHidden(true);
   };
   return (
-    <div role="region" aria-label="Cookie notice" className="fixed bottom-4 left-4 right-4 z-[70] max-w-sm rounded-theme border border-fg/10 bg-surface/95 p-4 text-sm shadow-theme backdrop-blur sm:right-auto">
+    <div role="region" aria-label="Cookie notice" className="fixed bottom-4 left-4 right-4 z-[70] flex max-w-md items-center gap-4 rounded-theme border border-fg/10 bg-surface/95 px-4 py-3 text-xs shadow-theme backdrop-blur sm:left-auto">
       <p className="text-fg/80">
         We use essential cookies to keep you signed in and secure. No advertising trackers.{' '}
         {site.settings.privacy.privacyPolicyUrl && (
@@ -120,7 +120,7 @@ export function CookieNotice() {
           </SmartLink>
         )}
       </p>
-      <button type="button" onClick={ok} className="btn btn-secondary btn-sm mt-3">
+      <button type="button" onClick={ok} className="btn btn-secondary btn-sm shrink-0">
         Got it
       </button>
     </div>

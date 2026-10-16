@@ -8,7 +8,7 @@ import { useQuality } from '../context';
  * Body: smooth lathe from a spline profile (flat base, full belly, shoulder);
  * handle: a tube swept along a Catmull-Rom curve. Satin powder-coat finish.
  */
-export function Kettlebell({ position, rotation, accent = false }: { position?: [number, number, number]; rotation?: [number, number, number]; accent?: boolean }) {
+export function Kettlebell({ position, rotation, accent = true }: { position?: [number, number, number]; rotation?: [number, number, number]; accent?: boolean }) {
   const m = useMaterials();
   const q = useQuality();
   const radial = seg(q, 64);
@@ -45,7 +45,8 @@ export function Kettlebell({ position, rotation, accent = false }: { position?: 
     );
     const handle = new THREE.TubeGeometry(path, q.detail ? 96 : 48, 0.0175, seg(q, 20), false);
     const horn = new THREE.CylinderGeometry(0.017, 0.026, 0.03, seg(q, 20));
-    const band = new THREE.TorusGeometry(0.1095, 0.0012, 6, radial * 2).rotateX(Math.PI / 2);
+    // Coloured weight band around the belly (competition bells are colour-coded).
+    const band = new THREE.CylinderGeometry(0.1102, 0.1102, 0.012, radial, 1, true);
     return { body, handle, horn, band };
   }, [radial, q]);
 
@@ -56,7 +57,7 @@ export function Kettlebell({ position, rotation, accent = false }: { position?: 
       {[-1, 1].map((s) => (
         <mesh key={s} geometry={geos.horn} material={m.powder} position={[0.062 * s, 0.168, 0]} rotation={[0, 0, s * 0.18]} />
       ))}
-      {accent && <mesh geometry={geos.band} material={m.accent} position={[0, 0.08, 0]} />}
+      {accent && <mesh geometry={geos.band} material={m.accent} position={[0, 0.082, 0]} />}
     </group>
   );
 }

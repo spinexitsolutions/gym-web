@@ -130,6 +130,7 @@ admin.patch(
       title: z.string().trim().min(2).max(100).optional(),
       description: z.string().trim().max(1000).optional(),
       trainer: objectId.optional().nullable(),
+      program: objectId.optional().nullable(),
       startsAt: z.coerce.date().optional(),
       durationMin: z.number().int().min(15).max(300).optional(),
       capacity: z.number().int().min(1).max(500).optional(),
@@ -149,6 +150,7 @@ admin.patch(
     await assertNoTrainerClash(b.trainer !== undefined ? b.trainer : String(c.trainer ?? ''), startsAt, endsAt, String(c._id));
     Object.assign(c, { ...b, startsAt, endsAt });
     if (b.trainer === null) c.trainer = undefined;
+    if (b.program === null) c.program = undefined;
     delete (c as unknown as Record<string, unknown>).durationMin;
     await c.save();
     if (b.startsAt || b.durationMin) await BookingModel.updateMany({ gymClass: c._id, active: true }, { $set: { startsAt, endsAt } });

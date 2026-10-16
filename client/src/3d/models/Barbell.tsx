@@ -25,11 +25,15 @@ const SLEEVE_END = 1.1;
 /** [startX, endX, knurled] along the shaft. */
 const SHAFT_ZONES: [number, number, boolean][] = [
   [-SHAFT_HALF, -0.62, false],
-  [-0.62, -0.215, true],
+  [-0.62, -0.46, true],
+  [-0.46, -0.45, false], // IWF knurl mark
+  [-0.45, -0.215, true],
   [-0.215, -0.08, false],
   [-0.08, 0.08, true],
   [0.08, 0.215, false],
-  [0.215, 0.62, true],
+  [0.215, 0.45, true],
+  [0.45, 0.46, false],
+  [0.46, 0.62, true],
   [0.62, SHAFT_HALF, false],
 ];
 
@@ -56,6 +60,7 @@ export function Barbell({ plates = [], collars = true, position, rotation }: Bar
       sleeve: cyl(SLEEVE_R, SLEEVE_END - SHAFT_HALF - FLANGE_W),
       sleeveCap: cyl(SLEEVE_R + 0.0015, 0.012),
       groove: new THREE.TorusGeometry(SLEEVE_R + 0.0003, 0.0012, 6, radial).rotateY(Math.PI / 2),
+      bushing: new THREE.TorusGeometry(SLEEVE_R + 0.0005, 0.0028, 10, radial).rotateY(Math.PI / 2),
       collar: cyl(0.04, 0.045),
       collarRing: cyl(0.042, 0.008),
     };
@@ -86,7 +91,8 @@ export function Barbell({ plates = [], collars = true, position, rotation }: Bar
           <mesh geometry={geos.flange} material={m.chrome} position={[SHAFT_HALF + FLANGE_W / 2, 0, 0]} />
           <mesh geometry={geos.sleeve} material={m.steel} position={[sleeveStart + sleeveLen / 2, 0, 0]} />
           <mesh geometry={geos.sleeveCap} material={m.chrome} position={[SLEEVE_END - 0.006, 0, 0]} />
-          {[0.06, 0.12].map((d) => (
+          <mesh geometry={geos.bushing} material={m.bronze} position={[sleeveStart + 0.004, 0, 0]} />
+          {[0.025, 0.05, 0.075, 0.1, 0.125].map((d) => (
             <mesh key={d} geometry={geos.groove} material={m.chrome} position={[SLEEVE_END - d, 0, 0]} />
           ))}
           {loaded.list.map(({ x, p }, i) => (

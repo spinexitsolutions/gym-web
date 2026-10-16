@@ -44,7 +44,7 @@ const StandingPlate = () => <WeightPlate accent rotation={[Math.PI / 2, 0, 0]} /
 const ShowDumbbell = () => <Dumbbell accent />;
 
 export const MODEL_REGISTRY: Record<string, ModelDef> = {
-  'hero-stack': { component: HeroStack, size: 3.3, motion: 'sway', baseRotation: [0.06, -0.42, 0] },
+  'hero-stack': { component: HeroStack, size: 2.9, motion: 'sway', baseRotation: [0.24, -0.62, 0] },
   dumbbell: { component: ShowDumbbell, size: 2.3, motion: 'spin', baseRotation: [0.18, -0.6, 0] },
   barbell: { component: LoadedBarbell, size: 3.6, motion: 'sway', baseRotation: [0.1, -0.55, 0] },
   kettlebell: { component: Kettlebell, size: 1.9, motion: 'spin', baseRotation: [0.12, 0.5, 0] },

@@ -22,9 +22,9 @@ export function HeroStack() {
           { variant: 'steel', radius: 0.16, thickness: 0.032 },
         ]}
       />
-      <Dumbbell position={[0.18, DUMBBELL_REST_HEIGHT, 0.5]} rotation={[0, 0.5, 0]} accent />
-      <Dumbbell position={[-0.22, DUMBBELL_REST_HEIGHT, 0.58]} rotation={[0, -0.25, 0]} />
-      <Kettlebell position={[-0.62, 0, 0.32]} rotation={[0, 0.6, 0]} />
+      <Dumbbell position={[0.3, DUMBBELL_REST_HEIGHT, 0.42]} rotation={[0, 0.35, 0]} accent />
+      <Dumbbell position={[0.05, DUMBBELL_REST_HEIGHT, 0.72]} rotation={[0, -0.2, 0]} />
+      <Kettlebell position={[-0.32, 0, 0.5]} rotation={[0, 0.6, 0]} />
       {/* Bumper leaning against the bar behind it */}
       <WeightPlate position={[0.42, PLATE_R * 0.98, -0.12]} rotation={[-Math.PI / 2 + 0.2, 0, 0]} />
     </group>

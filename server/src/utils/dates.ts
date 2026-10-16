@@ -27,3 +27,8 @@ export const hhmmToMinutes = (s: string) => {
   const [h, m] = s.split(':').map(Number);
   return h * 60 + m;
 };
+
+/** Human-readable date/time in the gym's timezone, for notification text. */
+export function formatGymTime(date: Date, timeZone = 'Asia/Kolkata'): string {
+  return new Intl.DateTimeFormat('en-IN', { timeZone, weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }).format(date);
+}

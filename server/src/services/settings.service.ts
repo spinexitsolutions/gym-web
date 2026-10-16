@@ -43,6 +43,9 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   return settings;
 }
 
+/** Gym timezone from the cached settings (sync; falls back to the default). */
+export const gymTimeZone = () => cache?.settings.business.timezone ?? DEFAULT_SITE_SETTINGS.business.timezone;
+
 export function invalidateSettingsCache() {
   cache = null;
 }

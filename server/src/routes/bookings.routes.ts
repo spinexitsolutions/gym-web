@@ -8,7 +8,8 @@ import { audit } from '../services/audit.service';
 import * as bookings from '../services/booking.service';
 import { notifyLater } from '../services/notification.service';
 import { renderEmail, sendEmail } from '../services/email.service';
-import { getSiteSettings } from '../services/settings.service';
+import { getSiteSettings, gymTimeZone } from '../services/settings.service';
+import { formatGymTime } from '../utils/dates';
 import { AppError } from '../utils/AppError';
 import { asyncHandler, created, ok } from '../utils/http';
 import { listQuery, pageMeta } from '../utils/pagination';
@@ -144,7 +145,7 @@ r.patch(
         html: renderEmail({ brand: settings.brand.name, heading: 'Trial confirmed', paragraphs: [`Hi ${b.guest.name},`, `Your trial session is confirmed for ${b.startsAt.toLocaleString('en-IN', { timeZone: settings.business.timezone })}. Bring water, a towel and training shoes.`] }),
       });
     }
-    if (b.trainer) notifyLater({ userId: b.trainer, type: 'booking', title: 'Trial session assigned', body: `${b.guest?.name} on ${b.startsAt.toUTCString()}`, link: '/trainer/schedule', dedupeKey: `trial-assign:${b._id}:${b.trainer}:${b.startsAt.getTime()}` });
+    if (b.trainer) notifyLater({ userId: b.trainer, type: 'booking', title: 'Trial session assigned', body: `${b.guest?.name} on ${formatGymTime(b.startsAt, gymTimeZone())}`, link: '/trainer/schedule', dedupeKey: `trial-assign:${b._id}:${b.trainer}:${b.startsAt.getTime()}` });
     await audit(req, { action: 'trial.update', entity: 'Booking', entityId: b._id, summary: `Trial ${req.body.status}` });
     ok(res, b);
   }),

@@ -20,7 +20,7 @@ describe('api client', () => {
 
   it('normalises API errors including field errors', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(json(422, { error: { code: 'VALIDATION_ERROR', message: 'Please check', details: [{ path: 'body.email', message: 'Invalid email' }] } }));
-    const err = await api.post('/auth/register', {}).catch((e) => e);
+    const err = (await api.post('/auth/register', {}).catch((e: unknown) => e)) as ApiError;
     expect(err).toBeInstanceOf(ApiError);
     expect(err.status).toBe(422);
     expect(err.fieldErrors).toEqual({ email: 'Invalid email' });
@@ -28,7 +28,7 @@ describe('api client', () => {
 
   it('turns network failures into a friendly error', async () => {
     vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('Failed to fetch'));
-    const err = await api.get('/x').catch((e) => e);
+    const err = (await api.get('/x').catch((e: unknown) => e)) as ApiError;
     expect(err).toBeInstanceOf(ApiError);
     expect(err.code).toBe('NETWORK_ERROR');
   });
@@ -49,7 +49,7 @@ describe('api client', () => {
       .spyOn(globalThis, 'fetch')
       .mockResolvedValueOnce(json(401, { error: { code: 'UNAUTHORIZED', message: 'Authentication required' } }))
       .mockResolvedValueOnce(json(401, { error: { code: 'UNAUTHORIZED', message: 'expired' } }));
-    const err = await api.get('/members/me').catch((e) => e);
+    const err = (await api.get('/members/me').catch((e: unknown) => e)) as ApiError;
     expect(err.status).toBe(401);
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });

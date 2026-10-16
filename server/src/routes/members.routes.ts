@@ -388,7 +388,9 @@ r.get(
     ok(
       res,
       users.map((u) => {
-        const m = memberships.find((x) => String(x.user) === String(u._id));
+        const mine = memberships.filter((x) => String(x.user) === String(u._id));
+        // Prefer the membership granting access now, then a queued one, then the latest expired.
+        const m = mine.find((x) => x.status === 'active') ?? mine.find((x) => x.status === 'upcoming') ?? mine[0];
         const p = profiles.find((x) => String(x.user) === String(u._id));
         return { ...publicUser(u), membership: m ? membershipView(m) : null, assignedTrainer: p?.assignedTrainer ?? null };
       }),

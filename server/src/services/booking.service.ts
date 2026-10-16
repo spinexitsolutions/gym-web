@@ -3,10 +3,10 @@ import { withTransaction } from '../config/db';
 import { hasPermission, type AuthUser } from '../middleware/auth';
 import { AttendanceModel, BookingModel, GymClassModel, LoyaltyTransactionModel, MemberProfileModel, MembershipPlanModel, TrainerProfileModel, UserModel } from '../models';
 import { AppError } from '../utils/AppError';
-import { addMinutes, dayKey, hhmmToMinutes, zonedParts } from '../utils/dates';
+import { addMinutes, dayKey, formatGymTime, hhmmToMinutes, zonedParts } from '../utils/dates';
 import { getActiveMembership } from './membership.service';
 import { notifyAdmins, notifyLater } from './notification.service';
-import { getSiteSettings } from './settings.service';
+import { getSiteSettings, gymTimeZone } from './settings.service';
 
 const ACTIVE = ['pending', 'confirmed', 'waitlisted'];
 
@@ -76,7 +76,7 @@ export async function bookClass(userId: string, classId: string) {
       title: booking.status === 'confirmed' ? `Booked: ${gymClass.title}` : `Waitlisted: ${gymClass.title}`,
       body:
         booking.status === 'confirmed'
-          ? `You're booked for ${gymClass.title} on ${gymClass.startsAt.toUTCString()}.`
+          ? `You're booked for ${gymClass.title} on ${formatGymTime(gymClass.startsAt, gymTimeZone())}.`
           : `The class is full. You're on the waitlist and will be notified if a spot opens.`,
       link: '/member/bookings',
       dedupeKey: `booking:${booking._id}:${booking.status}`,
@@ -143,7 +143,7 @@ export async function cancelBooking(viewer: AuthUser, bookingId: string, reason?
     }
   }
   if (!isOwner && booking.user) {
-    notifyLater({ userId: booking.user, type: 'booking', title: 'Booking cancelled', body: `Your booking on ${booking.startsAt.toUTCString()} was cancelled${reason ? `: ${reason}` : '.'}`, link: '/member/bookings', dedupeKey: `booking:${booking._id}:cancelled` });
+    notifyLater({ userId: booking.user, type: 'booking', title: 'Booking cancelled', body: `Your booking on ${formatGymTime(booking.startsAt, gymTimeZone())} was cancelled${reason ? `: ${reason}` : '.'}`, link: '/member/bookings', dedupeKey: `booking:${booking._id}:cancelled` });
   }
   return updated;
 }
@@ -184,8 +184,8 @@ export async function bookPersonalTraining(userId: string, input: { trainerId: s
   if (clash || classClash) throw AppError.conflict('That slot was just taken. Please choose another time.');
   try {
     const booking = await BookingModel.create({ type: 'personal_training', user: userId, trainer: input.trainerId, startsAt: start, endsAt: end, status: 'confirmed', active: true, notes: input.notes });
-    notifyLater({ userId: input.trainerId, type: 'booking', title: 'New personal training session', body: `A member booked a session on ${start.toUTCString()}.`, link: '/trainer/schedule', dedupeKey: `pt:${booking._id}:trainer` });
-    notifyLater({ userId, type: 'booking', title: 'Personal training booked', body: `Your session is confirmed for ${start.toUTCString()}.`, link: '/member/bookings', dedupeKey: `pt:${booking._id}:member` });
+    notifyLater({ userId: input.trainerId, type: 'booking', title: 'New personal training session', body: `A member booked a session on ${formatGymTime(start, gymTimeZone())}.`, link: '/trainer/schedule', dedupeKey: `pt:${booking._id}:trainer` });
+    notifyLater({ userId, type: 'booking', title: 'Personal training booked', body: `Your session is confirmed for ${formatGymTime(start, gymTimeZone())}.`, link: '/member/bookings', dedupeKey: `pt:${booking._id}:member` });
     return booking;
   } catch (err) {
     if ((err as { code?: number }).code === 11000) throw AppError.conflict('That slot was just taken. Please choose another time.');
@@ -274,7 +274,7 @@ export async function cancelClass(viewer: AuthUser, classId: string, reason: str
   await BookingModel.updateMany({ gymClass: classId, active: true }, { $set: { status: 'cancelled', active: false, cancelledAt: new Date(), cancelReason: `Class cancelled: ${reason}`, cancelledBy: viewer.id } });
   await GymClassModel.updateOne({ _id: classId }, { $set: { bookedCount: 0, waitlistCount: 0 } });
   for (const b of bookings) {
-    if (b.user) notifyLater({ userId: b.user, type: 'class', title: `Cancelled: ${gymClass.title}`, body: `${gymClass.title} on ${gymClass.startsAt.toUTCString()} has been cancelled. ${reason}`, link: '/member/bookings', dedupeKey: `class-cancel:${classId}:${b._id}`, whatsapp: true });
+    if (b.user) notifyLater({ userId: b.user, type: 'class', title: `Cancelled: ${gymClass.title}`, body: `${gymClass.title} on ${formatGymTime(gymClass.startsAt, gymTimeZone())} has been cancelled. ${reason}`, link: '/member/bookings', dedupeKey: `class-cancel:${classId}:${b._id}`, whatsapp: true });
   }
   return { gymClass, affected: bookings.length };
 }

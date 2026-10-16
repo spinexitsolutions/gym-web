@@ -40,6 +40,9 @@ export function Dumbbell({ position, rotation, accent = false }: { position?: [n
       collarLip: new THREE.TorusGeometry(0.024, 0.0025, 8, radial).rotateY(Math.PI / 2),
       emblem: cyl(0.036, 0.004),
       emblemRing: new THREE.TorusGeometry(0.03, 0.0012, 6, radial).rotateY(Math.PI / 2),
+      capLabel: new THREE.CircleGeometry(0.0335, radial).rotateY(Math.PI / 2),
+      screw: new THREE.CylinderGeometry(0.0075, 0.0075, 0.003, 6).rotateZ(Math.PI / 2),
+      screwHead: new THREE.CylinderGeometry(0.011, 0.011, 0.0025, radial).rotateZ(Math.PI / 2),
     };
   }, [radial, q.detail]);
 
@@ -54,6 +57,9 @@ export function Dumbbell({ position, rotation, accent = false }: { position?: [n
           <mesh geometry={geos.head} material={m.rubber} position={[headCenter, 0, 0]} />
           <mesh geometry={geos.emblem} material={m.chrome} position={[headCenter + HEAD_DEPTH / 2 + 0.001, 0, 0]} />
           <mesh geometry={geos.emblemRing} material={accent ? m.accent : m.steel} position={[headCenter + HEAD_DEPTH / 2 + 0.0035, 0, 0]} />
+          <mesh geometry={geos.capLabel} material={m.capLabel} position={[headCenter + HEAD_DEPTH / 2 + 0.0032, 0, 0]} />
+          <mesh geometry={geos.screwHead} material={m.chrome} position={[headCenter + HEAD_DEPTH / 2 + 0.0042, 0, 0]} />
+          <mesh geometry={geos.screw} material={m.darkSteel} position={[headCenter + HEAD_DEPTH / 2 + 0.0052, 0, 0]} />
         </group>
       ))}
     </group>
