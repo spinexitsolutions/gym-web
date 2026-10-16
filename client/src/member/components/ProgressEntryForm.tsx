@@ -40,7 +40,7 @@ export function ProgressEntryForm({ open, onClose, memberPath, invalidate, defau
   const save = useMutation({
     mutationFn: (v: FormOut) =>
       api.post(`${memberPath}/progress`, {
-        date: new Date(`${v.date}T12:00:00`).toISOString(),
+        date: (v.date === toDateInput(new Date()) ? new Date() : new Date(`${v.date}T12:00:00`)).toISOString(),
         weightKg: v.weightKg ?? null,
         bodyFatPct: v.bodyFatPct ?? null,
         measurements: Object.fromEntries(Object.entries({ chestCm: v.chestCm, waistCm: v.waistCm, hipsCm: v.hipsCm, armCm: v.armCm, thighCm: v.thighCm }).filter(([, x]) => x !== undefined)),

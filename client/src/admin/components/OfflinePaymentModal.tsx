@@ -109,7 +109,7 @@ export function OfflinePaymentModal({ open, onClose, member, onSuccess }: { open
         />
         {picked?.membership && (
           <Alert tone="info" className="sm:col-span-2">
-            Current: <strong>{picked.membership.planName}</strong> ({picked.membership.status}) until {fmtDate(picked.membership.endDate)}. “Auto” queues the new plan after it ends; “Upgrade” replaces it today.
+            Latest membership: <strong>{picked.membership.planName}</strong> ({picked.membership.status}) until {fmtDate(picked.membership.endDate)}. “Auto” queues the new plan after it ends; “Upgrade” replaces it today.
           </Alert>
         )}
         <Select

@@ -151,7 +151,7 @@ export default function DashboardPage() {
                       {latest.weightKg}
                       <span className="ml-1 text-base font-normal text-muted">kg</span>
                     </p>
-                    <p className="text-xs text-muted">Logged {relativeTime(latest.date)}</p>
+                    <p className="text-xs text-muted">Logged {new Date(latest.date) > new Date() ? fmtDate(latest.date) : relativeTime(latest.date)}</p>
                   </div>
                   {delta != null && delta !== 0 && (
                     <Badge tone="neutral">

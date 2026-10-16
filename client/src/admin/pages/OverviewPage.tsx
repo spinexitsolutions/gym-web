@@ -159,7 +159,7 @@ export default function OverviewPage() {
                       {c.location ? ` · ${c.location}` : ''}
                     </p>
                   </div>
-                  <CapacityBar booked={c.bookedCount} capacity={c.capacity} waitlist={c.waitlistCount} className="w-full min-w-0 sm:w-32" />
+                  <CapacityBar booked={c.bookedCount} capacity={c.capacity} waitlist={c.waitlistCount} className="col-span-2 w-full min-w-0 sm:w-32" />
                 </li>
               ))}
             </ul>
