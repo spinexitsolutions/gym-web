@@ -1,6 +1,6 @@
-import { PageHeader } from '@/components/ui';
+import { CmsPageView } from './CmsPageView';
 
-// TODO(stub): implement
-export default function Homepage() {
-  return <PageHeader title="Home" description="Coming soon." />;
+/** Home: the published CMS page flagged as home (GET /pages/public/home). */
+export default function HomePage() {
+  return <CmsPageView slug="home" home />;
 }

@@ -281,7 +281,7 @@ export default function PagesListPage() {
                   </div>
                   <p className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted">
                     <span className="font-mono">{live}</span>
-                    <span>{p.sectionCount} sections</span>
+                    <span>{p.sectionCount} section{p.sectionCount === 1 ? '' : 's'}</span>
                     <span>{p.publishedVersion > 0 ? `Live v${p.publishedVersion}${p.publishedAt ? ` · ${fmtDateTime(p.publishedAt)}` : ''}` : 'Never published'}</span>
                     {p.draftUpdatedAt && <span>Draft edited {relativeTime(p.draftUpdatedAt)}</span>}
                     {p.showInNav && !p.isHome && (

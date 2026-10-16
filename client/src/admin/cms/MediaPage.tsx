@@ -179,7 +179,7 @@ export default function MediaPage() {
             </button>
           ))}
         </div>
-        {list.data && <span className="ml-auto text-xs text-muted">{list.data.meta.total} images</span>}
+        {list.data && <span className="ml-auto text-xs text-muted">{list.data.meta.total} image{list.data.meta.total === 1 ? '' : 's'}</span>}
       </div>
 
       <div className={cn('grid gap-6', selected && 'lg:grid-cols-[minmax(0,1fr)_340px]')}>

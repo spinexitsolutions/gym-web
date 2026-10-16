@@ -530,7 +530,7 @@ export default function ContentPage() {
           <input className="input pl-9" value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search ${cfg.label.toLowerCase()}`} aria-label={`Search ${cfg.label}`} />
         </div>
         <span className="text-xs text-muted">Used by: {cfg.usedBy}</span>
-        {list.data && <span className="ml-auto text-xs text-muted">{list.data.total} items</span>}
+        {list.data && <span className="ml-auto text-xs text-muted">{list.data.total} item{list.data.total === 1 ? '' : 's'}</span>}
       </div>
 
       {list.isError ? (
