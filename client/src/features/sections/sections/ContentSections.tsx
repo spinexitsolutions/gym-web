@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { ArrowRight, Check } from 'lucide-react';
 import type { SectionProps } from '@apex/shared';
 import { useSite } from '@/app/SiteProvider';
 import { cn } from '@/lib/cn';
@@ -213,7 +212,7 @@ export function PromoSection({ p }: { p: SectionProps<'promo'> }) {
   return (
     <SectionShell type="promo" props={p} labelledBy={headingId}>
       <div className="container">
-        <Reveal className="glow-accent relative isolate grid overflow-hidden rounded-theme border border-primary/25 lg:grid-cols-[1.4fr_1fr]">
+        <Reveal className={cn('glow-accent relative isolate grid overflow-hidden rounded-theme border border-primary/25', cd && !cd.ended && 'lg:grid-cols-[1.4fr_1fr]')}>
           <div aria-hidden className="metal-panel absolute inset-0 -z-20" />
           {p.imageUrl ? (
             <div aria-hidden className="absolute inset-0 -z-10">
@@ -238,8 +237,8 @@ export function PromoSection({ p }: { p: SectionProps<'promo'> }) {
             )}
             {cd?.ended && preview && <p className="mt-6 text-sm text-warning">This offer has ended — it is hidden on the live site.</p>}
           </div>
-          <div className="flex items-center border-t border-fg/[0.08] p-8 md:p-14 lg:border-l lg:border-t-0">
-            {cd && !cd.ended ? (
+          {cd && !cd.ended && (
+            <div className="flex items-center border-t border-fg/[0.08] p-8 md:p-14 lg:border-l lg:border-t-0">
               <div className="w-full">
                 <p className="text-xs uppercase tracking-[0.24em] text-muted">Offer ends {fmtDate(p.endsAt, { day: 'numeric', month: 'long' })}</p>
                 <div className="mt-5 grid grid-cols-4 gap-2" role="timer" aria-label={`Offer ends ${fmtDate(p.endsAt, { day: 'numeric', month: 'long', hour: 'numeric', minute: '2-digit' })}`}>
@@ -262,24 +261,8 @@ export function PromoSection({ p }: { p: SectionProps<'promo'> }) {
                   ))}
                 </div>
               </div>
-            ) : (
-              <ul className="w-full space-y-3 text-sm text-fg/80">
-                <li className="flex items-center gap-3">
-                  <span className="grid h-9 w-9 place-items-center rounded-full bg-primary/15 text-primary">
-                    <Check className="h-4 w-4" aria-hidden />
-                  </span>
-                  <span className="font-display text-xl font-semibold">Limited availability</span>
-                </li>
-                {p.cta && (
-                  <li className="pl-12 text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      {p.cta.label} <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-                    </span>
-                  </li>
-                )}
-              </ul>
-            )}
-          </div>
+            </div>
+          )}
         </Reveal>
       </div>
     </SectionShell>

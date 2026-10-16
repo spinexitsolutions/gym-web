@@ -10,7 +10,7 @@ export default function SchedulePage() {
   const q = useClasses(14, 200);
   const [level, setLevel] = useState('');
   const [trainer, setTrainer] = useState('');
-  const all = q.data ?? [];
+  const all = useMemo(() => q.data ?? [], [q.data]);
   const trainers = useMemo(() => {
     const m = new Map<string, string>();
     all.forEach((c) => c.trainer && m.set(c.trainer.id, c.trainer.name));

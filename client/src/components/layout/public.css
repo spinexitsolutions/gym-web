@@ -51,7 +51,10 @@
   -webkit-text-stroke: 1px rgb(var(--c-text) / 0.28);
 }
 .glow-accent { box-shadow: none; }
-[data-glow='true'] .glow-accent { box-shadow: 0 0 0 1px rgb(var(--c-primary) / 0.35), 0 30px 80px -30px rgb(var(--c-primary) / 0.35); }
+[data-glow='true'] .glow-accent { box-shadow: 0 0 0 1px rgb(var(--c-primary) / 0.3), 0 24px 60px -34px rgb(var(--c-primary) / 0.3); }
+
+/* Consecutive sections on the same background share their padding instead of doubling it. */
+section.section[data-section-type] + section.section[data-section-type]:not(.bg-surface):not(.section-contrast) { padding-top: calc(var(--section-y) * 0.45); }
 
 /* ---------- Marquee ---------- */
 .marquee-track { animation: marquee 50s linear infinite; }

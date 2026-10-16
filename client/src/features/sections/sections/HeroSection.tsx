@@ -49,10 +49,10 @@ function TrustBar({ showScrollHint }: { showScrollHint: boolean }) {
   return (
     <motion.div {...fade(0.9)} className="flex w-full items-end justify-between gap-6 border-t border-fg/[0.08] pt-5">
       {items.length > 0 ? (
-        <dl className="flex flex-wrap">
+        <dl className="grid w-full grid-cols-3 sm:flex sm:w-auto">
           {items.map((it, i) => (
-            <div key={it.label} className={cn('flex flex-col-reverse gap-1 pr-6 sm:pr-10', i > 0 && 'border-l border-fg/[0.1] pl-6 sm:pl-10')}>
-              <dt className="text-[0.65rem] uppercase tracking-[0.22em] text-muted">{it.label}</dt>
+            <div key={it.label} className={cn('flex flex-col-reverse gap-1 pr-3 sm:pr-10', i > 0 && 'border-l border-fg/[0.1] pl-3 sm:pl-10')}>
+              <dt className="text-[0.6rem] uppercase leading-snug tracking-[0.16em] text-muted sm:text-[0.65rem] sm:tracking-[0.22em]">{it.label}</dt>
               <dd className="font-display text-2xl font-semibold tabular-nums tracking-tight sm:text-3xl">{nf.format(it.value)}</dd>
             </div>
           ))}

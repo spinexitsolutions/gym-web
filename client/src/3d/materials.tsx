@@ -241,7 +241,6 @@ export function MaterialsProvider({ quality, children }: { quality: QualitySetti
   const accent = useThemeColor('--c-primary');
   const hex = accent.getHexString();
   // Rebuilt when the theme accent changes (labels are baked into textures).
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const mats = useMemo(() => createMaterials(quality, new THREE.Color(`#${hex}`)), [quality, hex]);
   useEffect(
     () => () => {

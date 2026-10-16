@@ -89,7 +89,7 @@ export function useJoinHref() {
 
 export function PlanCard({ plan, highlighted }: { plan: Plan; highlighted: boolean }) {
   const joinHref = useJoinHref();
-  const perMonth = plan.durationDays >= 85 && plan.priceMinor > 0 ? Math.round(plan.priceMinor / (plan.durationDays / 30)) : null;
+  const perMonth = plan.durationDays >= 85 && plan.priceMinor > 0 ? Math.round(plan.priceMinor / (plan.durationDays / 30) / 100) * 100 : null;
   const label = plan.promoLabel || (highlighted ? 'Most popular' : plan.isTrial ? 'Try it' : '');
   return (
     <div className={cn('card lift relative flex h-full flex-col p-7 md:p-8', highlighted && 'glow-accent border-primary/40')}>
@@ -103,7 +103,7 @@ export function PlanCard({ plan, highlighted }: { plan: Plan; highlighted: boole
       </div>
       <div className="mt-8 flex items-end gap-2">
         <span className="font-display text-5xl font-semibold tracking-tight tabular-nums">{plan.priceMinor === 0 ? 'Free' : money(plan.priceMinor)}</span>
-        <span className="pb-1.5 text-sm text-muted">/ {durationLabel(plan.durationDays)}</span>
+        <span className="pb-1.5 text-sm text-muted">{plan.priceMinor === 0 ? `for ${plan.durationDays} days` : `/ ${durationLabel(plan.durationDays)}`}</span>
       </div>
       <div className="mt-2 min-h-[1.25rem] text-xs text-muted">
         {plan.compareAtMinor && plan.compareAtMinor > plan.priceMinor ? <span className="mr-3 line-through">{money(plan.compareAtMinor)}</span> : null}

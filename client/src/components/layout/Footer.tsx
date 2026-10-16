@@ -119,7 +119,7 @@ export function Footer() {
 
         <div className="mt-16 flex flex-col-reverse gap-6 border-t border-fg/[0.07] py-8 text-xs text-muted md:flex-row md:items-center md:justify-between">
           <p>
-            © {year} {s?.business.legalName || brandName}. All rights reserved.
+            © {year} {(s?.business.legalName || brandName).replace(/\.$/, '')}. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
             {s?.privacy.privacyPolicyUrl && (
