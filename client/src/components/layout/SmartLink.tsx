@@ -38,6 +38,22 @@ const variantClass: Record<Cta['variant'], string> = { primary: 'btn-primary', s
 /** Button-styled CMS call to action. */
 export function CtaButton({ cta, size = 'lg', className }: { cta: Cta; size?: 'md' | 'lg' | 'sm'; className?: string }) {
   const ext = isExternal(cta.href);
+  if (cta.variant === 'ghost') {
+    // Ghost = refined text link with underline + arrow, aligned to button height.
+    return (
+      <SmartLink
+        href={cta.href}
+        className={cn(
+          'group inline-flex items-center justify-center gap-2 px-2 font-semibold text-fg underline decoration-fg/25 decoration-1 underline-offset-[10px] transition-colors hover:decoration-primary',
+          size === 'lg' ? 'h-[3.25rem] text-base' : size === 'sm' ? 'h-8 text-xs' : 'h-11 text-sm',
+          className,
+        )}
+      >
+        {cta.label}
+        <ArrowRight className="h-4 w-4 -rotate-45 transition-transform group-hover:rotate-0" aria-hidden />
+      </SmartLink>
+    );
+  }
   return (
     <SmartLink href={cta.href} className={cn('btn group', variantClass[cta.variant ?? 'primary'], size === 'lg' && 'btn-lg', size === 'sm' && 'btn-sm', className)}>
       {cta.label}

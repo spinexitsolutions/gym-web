@@ -97,7 +97,9 @@ export function Barbell({ plates = [], collars = true, position, rotation }: Bar
           ))}
           {loaded.list.map(({ x, p }, i) => (
             // Plates face outward: accent ring on the outer face only.
-            <WeightPlate key={i} {...p} position={[x, 0, 0]} rotation={[0, 0, -Math.PI / 2]} />
+            <group key={i} scale={[1, 1, side]}>
+              <WeightPlate {...p} position={[x, 0, 0]} rotation={[0, 0, -Math.PI / 2]} />
+            </group>
           ))}
           {collars && plates.length > 0 && (
             <group position={[loaded.end + 0.024, 0, 0]}>

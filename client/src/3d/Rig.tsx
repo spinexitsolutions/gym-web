@@ -129,7 +129,10 @@ export function Rig({ config, motion, baseRotation, reducedMotion, scrollTarget,
     const parallax = interactive && !reducedMotion;
     const tx = baseRotation[0] + (parallax ? THREE.MathUtils.clamp(s.py, -1, 1) * MAX_PITCH_TILT : 0) + p * 0.35;
     const ty = parallax ? THREE.MathUtils.clamp(s.px, -1, 1) * MAX_YAW_TILT : 0;
-    const ny = config.position[1] - p * 0.6;
+    // Idle float: a slow, small bob so the object feels suspended rather than parked.
+    const float = auto ? Math.sin(s.clock * 0.9) * 0.035 : 0;
+    if (auto && motion === 'spin') s.clock += d * config.animationSpeed;
+    const ny = config.position[1] - p * 0.6 + float;
     const o = outer.current;
     o.rotation.x = reducedMotion ? tx : THREE.MathUtils.damp(o.rotation.x, tx, 4, d);
     o.rotation.y = reducedMotion ? ty : THREE.MathUtils.damp(o.rotation.y, ty, 4, d);

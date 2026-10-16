@@ -57,7 +57,7 @@ export function Dumbbell({ position, rotation, accent = false }: { position?: [n
           <mesh geometry={geos.head} material={m.rubber} position={[headCenter, 0, 0]} />
           <mesh geometry={geos.emblem} material={m.chrome} position={[headCenter + HEAD_DEPTH / 2 + 0.001, 0, 0]} />
           <mesh geometry={geos.emblemRing} material={accent ? m.accent : m.steel} position={[headCenter + HEAD_DEPTH / 2 + 0.0035, 0, 0]} />
-          <mesh geometry={geos.capLabel} material={m.capLabel} position={[headCenter + HEAD_DEPTH / 2 + 0.0032, 0, 0]} />
+          <mesh geometry={geos.capLabel} material={m.capLabel} position={[headCenter + HEAD_DEPTH / 2 + 0.0032, 0, 0]} scale={[1, 1, side]} />
           <mesh geometry={geos.screwHead} material={m.chrome} position={[headCenter + HEAD_DEPTH / 2 + 0.0042, 0, 0]} />
           <mesh geometry={geos.screw} material={m.darkSteel} position={[headCenter + HEAD_DEPTH / 2 + 0.0052, 0, 0]} />
         </group>

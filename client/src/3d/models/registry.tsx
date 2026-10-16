@@ -94,7 +94,13 @@ function localBox(root: THREE.Object3D): THREE.Box3 {
  * Centres its children on the origin and scales them so their largest dimension equals `size`.
  * Reports the fitted height so the floor shadow can sit exactly under the model.
  */
-export function Fit({ size, children, onFit }: { size: number; children: ReactNode; onFit?: (height: number) => void }) {
+export interface FitInfo {
+  width: number;
+  height: number;
+  depth: number;
+}
+
+export function Fit({ size, children, onFit }: { size: number; children: ReactNode; onFit?: (info: FitInfo) => void }) {
   const inner = useRef<THREE.Group>(null);
   const [fit, setFit] = useState<{ s: number; offset: [number, number, number] } | null>(null);
   useLayoutEffect(() => {
@@ -105,7 +111,7 @@ export function Fit({ size, children, onFit }: { size: number; children: ReactNo
     const c = box.getCenter(new THREE.Vector3());
     const s = size / Math.max(dim.x, dim.y, dim.z, 1e-6);
     setFit({ s, offset: [-c.x, -c.y, -c.z] });
-    onFit?.(dim.y * s);
+    onFit?.({ width: dim.x * s, height: dim.y * s, depth: dim.z * s });
   }, [size, onFit]);
   return (
     <group scale={fit?.s ?? 1} visible={Boolean(fit)}>
@@ -151,7 +157,7 @@ class GltfBoundary extends Component<{ fallback: ReactNode; children: ReactNode 
 }
 
 /** Renders a resolved model; glTF errors fall back to the procedural dumbbell. */
-export function ModelView({ model, onFit }: { model: ResolvedModel; onFit?: (h: number) => void }) {
+export function ModelView({ model, onFit }: { model: ResolvedModel; onFit?: (info: FitInfo) => void }) {
   const fallbackDef = MODEL_REGISTRY[FALLBACK_MODEL_ID];
   const Fallback = fallbackDef.component;
   if (model.kind === 'gltf') {

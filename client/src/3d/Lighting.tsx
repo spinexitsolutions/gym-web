@@ -43,6 +43,9 @@ export function Lighting({ environment, quality }: { environment: SceneConfig['e
         <Lightformer form="rect" intensity={p.strips * 0.5} color={p.stripColor} position={[0, 2.5, 6]} scale={[6, 0.35, 1]} />
         {/* Low front fill so rubber reads as rubber, not a black hole */}
         <Lightformer form="rect" intensity={p.fill} color="#ffffff" position={[0, -1.5, 5]} scale={[12, 3, 1]} />
+        {/* Warm / cool rims from behind: the thin bright edges on chrome and plate lips */}
+        <Lightformer form="rect" intensity={p.strips * 0.9} color="#ffe9d2" position={[-3.5, 1.5, -5]} rotation-y={Math.PI / 5} scale={[4, 0.25, 1]} />
+        <Lightformer form="rect" intensity={p.strips * 0.9} color="#d6e4ff" position={[3.5, 0.8, -5]} rotation-y={-Math.PI / 5} scale={[4, 0.25, 1]} />
         {/* Faint accent kicker behind — a hint of the brand colour in reflections */}
         <Lightformer form="ring" intensity={p.accent} color={accent} position={[3, 1, -7]} scale={3.5} />
       </Environment>

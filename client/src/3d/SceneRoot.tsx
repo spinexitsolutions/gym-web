@@ -4,7 +4,8 @@
  */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { ContactShadows, PerformanceMonitor, useProgress } from '@react-three/drei';
+import { PerformanceMonitor, useProgress } from '@react-three/drei';
+import { Bloom, EffectComposer, SMAA } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import type { SceneConfig } from '@apex/shared';
 import { useSite } from '@/app/SiteProvider';
@@ -12,7 +13,7 @@ import { cn } from '@/lib/cn';
 import { QualityContext } from './context';
 import { Lighting } from './Lighting';
 import { MaterialsProvider, useThemeColor } from './materials';
-import { ModelView, resolveModel, type ResolvedModel } from './models/registry';
+import { ModelView, resolveModel, type FitInfo, type ResolvedModel } from './models/registry';
 import type { QualitySettings } from './quality';
 import { Rig } from './Rig';
 
@@ -52,51 +53,96 @@ function FirstFrames({ onReady }: { onReady: () => void }) {
     n.current += 1;
     if (n.current >= 3) {
       done.current = true;
+      if (import.meta.env.DEV) {
+        let triangles = 0;
+        let meshes = 0;
+        s.scene.traverse((o) => {
+          const g = (o as THREE.Mesh).isMesh ? (o as THREE.Mesh).geometry : null;
+          if (!g) return;
+          meshes += 1;
+          triangles += (g.index ? g.index.count : g.attributes.position.count) / 3;
+        });
+        (window as unknown as { __apex3d?: unknown }).__apex3d = { triangles: Math.round(triangles), meshes, textures: s.gl.info.memory.textures, geometries: s.gl.info.memory.geometries };
+      }
       onReady();
     } else s.invalidate();
   });
   return null;
 }
 
+/** Soft radial falloff used for the baked floor shadow. */
+function useShadowTexture() {
+  const tex = useMemo(() => {
+    const size = 256;
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const ctx = c.getContext('2d')!;
+    const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+    g.addColorStop(0, 'rgba(0,0,0,0.85)');
+    g.addColorStop(0.45, 'rgba(0,0,0,0.5)');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, size, size);
+    return new THREE.CanvasTexture(c);
+  }, []);
+  useEffect(() => () => tex.dispose(), [tex]);
+  return tex;
+}
+
 function Stage({ model, quality, modelKey }: { model: ResolvedModel; quality: QualitySettings; modelKey: string }) {
-  const [fit, setFit] = useState<{ key: string; h: number } | null>(null);
-  const height = fit && fit.key === modelKey ? fit.h : null;
+  const [fit, setFit] = useState<{ key: string; info: FitInfo } | null>(null);
+  const info = fit && fit.key === modelKey ? fit.info : null;
   const group = useRef<THREE.Group>(null);
   const invalidate = useThree((s) => s.invalidate);
+  const shadowTex = useShadowTexture();
   const onFit = useCallback(
-    (h: number) => {
-      setFit({ key: modelKey, h });
+    (i: FitInfo) => {
+      setFit({ key: modelKey, info: i });
       invalidate();
     },
     [invalidate, modelKey],
   );
   useEffect(() => {
-    if (!quality.shadows || height === null) return;
+    if (!quality.shadows || !info) return;
     group.current?.traverse((o) => {
-      if ((o as THREE.Mesh).isMesh) {
+      if ((o as THREE.Mesh).isMesh && !(o as THREE.Mesh).userData.noShadow) {
         o.castShadow = true;
         o.receiveShadow = true;
       }
     });
-  }, [quality.shadows, height]);
+  }, [quality.shadows, info]);
   const size = model.def.size;
+  // Frame the model inside the canvas at any aspect ratio (narrow canvases shrink it).
+  const viewport = useThree((st) => st.viewport);
+  const frame = Math.min(1, (viewport.width * 0.7) / size, (viewport.height * 0.95) / (size * 0.75));
   return (
-    <group ref={group}>
+    <group ref={group} scale={frame}>
       <ModelView key={modelKey} model={model} onFit={onFit} />
-      {quality.contactShadows && height !== null && (
-        <ContactShadows
-          key={`${modelKey}-${height.toFixed(3)}`}
-          position={[0, -height / 2 - 0.004, 0]}
-          scale={size * 1.7}
-          far={Math.max(0.6, height)}
-          blur={2.6}
-          opacity={0.7}
-          resolution={quality.contactShadowResolution}
-          frames={1}
-          color="#000000"
-        />
+      {info && (
+        // Baked contact shadow: two stacked soft footprints (tight core + wide penumbra).
+        <group position={[0, -info.height / 2 + 0.002, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <mesh scale={[info.width * 1.05, info.depth * 1.15 + 0.15, 1]} userData={{ noShadow: true }} renderOrder={-1}>
+            <planeGeometry />
+            <meshBasicMaterial map={shadowTex} transparent opacity={quality.contactShadows ? 0.75 : 0.55} depthWrite={false} fog={false} />
+          </mesh>
+          <mesh scale={[info.width * 1.6, info.depth * 1.9 + 0.5, 1]} userData={{ noShadow: true }} renderOrder={-2}>
+            <planeGeometry />
+            <meshBasicMaterial map={shadowTex} transparent opacity={0.35} depthWrite={false} fog={false} />
+          </mesh>
+        </group>
       )}
     </group>
+  );
+}
+
+/** Subtle post-processing on medium/high tiers: soft bloom on chrome highlights + SMAA. (The vignette is CSS so the canvas stays transparent.) */
+function Effects({ quality }: { quality: QualitySettings }) {
+  if (quality.tier === 'low' || quality.reducedMotion) return null;
+  return (
+    <EffectComposer multisampling={quality.tier === 'high' ? 4 : 0} enableNormalPass={false}>
+      <Bloom mipmapBlur luminanceThreshold={0.92} luminanceSmoothing={0.15} intensity={0.45} radius={0.6} />
+      {quality.tier === 'medium' ? <SMAA /> : <></>}
+    </EffectComposer>
   );
 }
 
@@ -150,6 +196,7 @@ export default function SceneRoot({ config, quality, active, onReady, onContextL
             <Rig config={config} motion={model.def.motion} baseRotation={model.def.baseRotation} reducedMotion={reduced} scrollTarget={scrollTarget}>
               <Stage model={model} quality={quality} modelKey={modelKey} />
             </Rig>
+            <Effects quality={quality} />
             <FirstFrames onReady={onReady} />
           </MaterialsProvider>
         </QualityContext.Provider>
