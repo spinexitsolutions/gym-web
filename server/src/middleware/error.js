@@ -1,13 +1,14 @@
 import mongoose from 'mongoose';
 import multer from 'multer';
 import { ApiError } from '../utils/ApiError.js';
-import { isProd } from '../config/env.js';
+import { isProd, isTest } from '../config/env.js';
+import { ErrorLog } from '../models/index.js';
 
 export function notFound(req, _res, next) {
   next(ApiError.notFound(`Route not found: ${req.method} ${req.originalUrl.split('?')[0]}`));
 }
 
-// eslint-disable-next-line no-unused-vars
+ 
 export function errorHandler(err, req, res, _next) {
   let status = err.statusCode || 500;
   let message = err.message || 'Something went wrong';
@@ -38,6 +39,12 @@ export function errorHandler(err, req, res, _next) {
   if (status >= 500) {
     // Log the error without request bodies (which may contain passwords or tokens).
     console.error(`[${req.method} ${req.originalUrl.split('?')[0]}]`, err.stack || err);
+    if (!isTest && mongoose.connection.readyState === 1) {
+      ErrorLog.create({
+        method: req.method, path: req.originalUrl.split('?')[0], status, user: req.user?._id,
+        message: String(err.message || '').slice(0, 500), stack: String(err.stack || '').slice(0, 4000),
+      }).catch(() => {});
+    }
     if (isProd && !(err instanceof ApiError)) message = 'Internal server error';
   }
 

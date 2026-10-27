@@ -76,4 +76,17 @@ export const emailTemplates = {
   }),
 };
 
+export function receiptEmail(user, payment, planName, pdfBuffer) {
+  const amount = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(payment.amountPaise / 100);
+  return {
+    to: user.email,
+    subject: `Payment receipt ${payment.invoiceNumber}`,
+    heading: 'Payment received — thank you!',
+    body: `<p>We received <strong>${amount}</strong> for <strong>${escapeHtml(planName || 'your membership')}</strong>.</p>
+      <p>Invoice number: ${escapeHtml(payment.invoiceNumber)}. Your invoice is attached and is always available in your dashboard.</p>`,
+    cta: { label: 'View membership', href: appUrl('/dashboard/membership') },
+    attachments: pdfBuffer ? [{ filename: `${payment.invoiceNumber}.pdf`, content: pdfBuffer, contentType: 'application/pdf' }] : undefined,
+  };
+}
+
 export { escapeHtml, smtpConfigured };

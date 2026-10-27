@@ -1,10 +1,12 @@
 import env from './config/env.js';
 import { connectDB } from './config/db.js';
 import { createApp } from './app.js';
+import { startScheduler } from './jobs/scheduler.js';
 
 async function main() {
   await connectDB();
   const app = createApp();
+  startScheduler();
   const server = app.listen(env.PORT, () => console.log(`API listening on http://localhost:${env.PORT}/api`));
 
   const shutdown = (signal) => {

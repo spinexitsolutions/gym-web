@@ -29,6 +29,17 @@ const schema = z.object({
   SMTP_USER: z.string().optional(),
   SMTP_PASS: z.string().optional(),
   MAIL_FROM: z.string().default('Aurum Fitness Club <no-reply@example.com>'),
+  // Calendar day for attendance and reports is computed in this time zone.
+  GYM_TIMEZONE: z.string().default('Asia/Kolkata'),
+  INVOICE_GSTIN: z.string().optional(),
+  // Without Razorpay keys, non-production servers use a clearly labelled sandbox gateway for testing.
+  PAYMENT_SANDBOX: bool.default(true),
+  VAPID_PUBLIC_KEY: z.string().optional(),
+  VAPID_PRIVATE_KEY: z.string().optional(),
+  VAPID_SUBJECT: z.string().default('mailto:admin@example.com'),
+  ANTHROPIC_API_KEY: z.string().optional(),
+  ASSISTANT_MODEL: z.string().default('claude-opus-5-5'),
+  DISABLE_JOBS: bool.default(false),
 });
 
 const parsed = schema.safeParse(process.env);

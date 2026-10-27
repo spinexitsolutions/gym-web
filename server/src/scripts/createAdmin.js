@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+ 
 // Secure initial admin creation. There are no default credentials anywhere in this project.
 // Interactive:      npm run create-admin
 // Non-interactive:  ADMIN_NAME="..." ADMIN_EMAIL="..." ADMIN_PASSWORD="..." npm run create-admin

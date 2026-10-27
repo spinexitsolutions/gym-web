@@ -8,6 +8,7 @@ const attendanceSchema = new mongoose.Schema(
     checkOutAt: Date,
     method: { type: String, enum: ['qr', 'manual', 'staff'], default: 'qr' },
     recordedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    lastTokenId: { type: String, select: false }, // last QR token used, blocks replay
     corrections: [
       {
         _id: false,

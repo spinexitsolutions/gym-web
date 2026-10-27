@@ -3,12 +3,15 @@
   "private": true,
   "version": "0.1.0",
   "description": "Premium luxury gym website and gym management system (MERN).",
-  "workspaces": ["server", "client"],
+  "workspaces": [
+    "server",
+    "client"
+  ],
   "scripts": {
     "dev": "concurrently -n api,web -c yellow,cyan \"npm run dev -w server\" \"npm run dev -w client\"",
     "build": "npm run build -w client",
     "start": "npm run start -w server",
-    "lint": "npm run lint -w client",
+    "lint": "npm run lint -w server && npm run lint -w client",
     "test": "npm run test -w server && npm run test -w client",
     "seed": "npm run seed -w server",
     "create-admin": "npm run create-admin -w server"
@@ -16,5 +19,7 @@
   "devDependencies": {
     "concurrently": "^9.1.0"
   },
-  "engines": { "node": ">=20.11" }
+  "engines": {
+    "node": ">=20.11"
+  }
 }

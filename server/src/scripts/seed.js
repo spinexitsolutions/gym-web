@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+ 
 // Seeds DEMO content so the website renders out of the box. Everything created here is sample data:
 //   - plans, trainers and programs are examples — edit or replace them in the admin dashboard;
 //   - testimonials are flagged isDemo and display a "Sample" badge on the site;

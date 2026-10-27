@@ -32,4 +32,10 @@ bookingSchema.index(
   { unique: true, partialFilterExpression: { classSchedule: { $exists: true }, status: { $in: ['booked', 'waitlisted'] } } },
 );
 
+// A trainer can hold only one live personal-training booking per start time (race-safe double-booking guard).
+bookingSchema.index(
+  { trainer: 1, startAt: 1 },
+  { unique: true, partialFilterExpression: { type: 'personal_training', status: 'booked' } },
+);
+
 export default mongoose.model('Booking', bookingSchema);

@@ -6,6 +6,9 @@ import compression from 'compression';
 import morgan from 'morgan';
 import { clientOrigins, isTest } from './config/env.js';
 import api from './routes/index.js';
+import seoRoutes from './routes/seo.routes.js';
+import { webhook } from './controllers/payment.controller.js';
+import { asyncHandler } from './utils/asyncHandler.js';
 import { apiLimiter } from './middleware/rateLimit.js';
 import { csrfProtection } from './middleware/csrf.js';
 import { sanitizeInput } from './middleware/sanitize.js';
@@ -29,13 +32,16 @@ export function createApp() {
   morgan.token('path', (req) => req.originalUrl.split('?')[0]);
   if (!isTest) app.use(morgan(':method :path :status :response-time ms'));
 
-  // Webhooks need the raw body for signature checks; they are mounted before the JSON parser (Phase 5).
+  // Razorpay signs the raw body, so the webhook is mounted before the JSON parser (no auth/CSRF; signature-verified).
+  app.post('/api/payments/webhook', express.raw({ type: 'application/json', limit: '1mb' }), asyncHandler(webhook));
+
   app.use(express.json({ limit: '1mb' }));
   app.use(express.urlencoded({ extended: false, limit: '100kb' }));
   app.use(cookieParser());
   app.use(sanitizeInput);
 
-  app.use('/api', apiLimiter, csrfProtection({ exempt: ['/payments/webhook'] }), api);
+  app.use('/api', apiLimiter, csrfProtection(), api);
+  app.use(seoRoutes); // /sitemap.xml and /robots.txt
 
   app.use(notFound);
   app.use(errorHandler);

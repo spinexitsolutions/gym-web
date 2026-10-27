@@ -56,3 +56,22 @@ describe('security middleware', () => {
     expect(res.status).toBe(400);
   });
 });
+
+describe('payments webhook & admin routes', () => {
+  it('rejects webhooks without a valid signature (no CSRF token needed)', async () => {
+    const res = await request(app).post('/api/payments/webhook').set('Content-Type', 'application/json').send('{"event":"payment.captured"}');
+    expect(res.status).toBe(400);
+  });
+
+  it('requires authentication for admin, member and report endpoints', async () => {
+    for (const path of ['/api/admin/plans', '/api/members', '/api/reports/overview', '/api/payments', '/api/attendance/qr', '/api/bookings/me', '/api/notifications']) {
+      expect((await request(app).get(path)).status, path).toBe(401);
+    }
+  });
+
+  it('serves the assistant status without auth', async () => {
+    const res = await request(app).get('/api/assistant/status');
+    expect(res.status).toBe(200);
+    expect(res.body.data.enabled).toBe(false);
+  });
+});
