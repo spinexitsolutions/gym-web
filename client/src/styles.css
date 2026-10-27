@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Default (dark) tokens. ThemeProvider overrides --accent etc. from admin settings at runtime. */
+:root {
+  --bg: 11 11 12;
+  --surface: 20 20 22;
+  --elevated: 28 28 31;
+  --ink: 244 241 234;
+  --muted: 163 157 146;
+  --line: 255 255 255;
+  --line-alpha: 0.09;
+  --accent: 201 165 76;
+  --accent-soft: 230 207 139;
+  --success: 74 222 128;
+  --danger: 248 113 113;
+  --radius: 0.75rem;
+  --font-heading: 'Playfair Display';
+  --font-body: 'Inter';
+  color-scheme: dark;
+}
+
+html.light {
+  --bg: 248 246 241;
+  --surface: 255 255 255;
+  --elevated: 241 238 231;
+  --ink: 20 19 17;
+  --muted: 102 97 88;
+  --line: 20 19 17;
+  --line-alpha: 0.1;
+  --accent: 160 124 40; /* darker gold keeps contrast on light backgrounds */
+  --success: 22 163 74;
+  --danger: 220 38 38;
+  color-scheme: light;
+}
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body { @apply bg-bg text-ink font-sans antialiased; text-rendering: optimizeLegibility; }
+  h1, h2, h3, h4 { @apply font-display tracking-tight; }
+  ::selection { background: rgb(var(--accent) / 0.35); }
+  :focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 3px; border-radius: 4px; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+}
+
+@layer components {
+  .hairline { border-color: rgb(var(--line) / var(--line-alpha)); }
+  .glass {
+    background: rgb(var(--surface) / 0.55);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid rgb(var(--line) / var(--line-alpha));
+  }
+  .eyebrow { @apply text-[0.7rem] font-semibold uppercase tracking-eyebrow text-gold; }
+  .text-gold-metal {
+    background: linear-gradient(100deg, rgb(var(--accent-soft)), rgb(var(--accent)) 50%, rgb(var(--accent-soft)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .input {
+    @apply w-full rounded-brand border bg-surface px-4 py-3 text-sm text-ink placeholder:text-muted/70 transition;
+    border-color: rgb(var(--line) / 0.14);
+  }
+  .input:focus { @apply outline-none; border-color: rgb(var(--accent)); box-shadow: 0 0 0 3px rgb(var(--accent) / 0.18); }
+  .input[aria-invalid='true'] { border-color: rgb(var(--danger)); }
+  .skeleton { @apply animate-pulse rounded-brand bg-elevated; }
+}
