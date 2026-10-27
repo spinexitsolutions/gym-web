@@ -21,7 +21,7 @@ function SelectedPlan({ slug, period }) {
     <div className="mb-6 rounded-brand border border-gold/40 bg-gold/5 p-4 text-sm">
       <p className="text-xs uppercase tracking-wider text-muted">Selected plan</p>
       <p className="mt-1 font-semibold">{plan.name} · {PERIODS[option.period].label} — {formatPaise(option.pricePaise)}</p>
-      <p className="mt-1 text-xs text-muted">Create your account first; you can complete the membership from your dashboard.</p>
+      <p className="mt-1 text-xs text-muted">Create your account, verify your email, then pay securely to activate it.</p>
     </div>
   );
 }
@@ -41,7 +41,7 @@ export default function RegisterPage() {
     try {
       await signUp(values);
       const plan = params.get('plan');
-      navigate(plan ? `/account?welcome=1&plan=${encodeURIComponent(plan)}&period=${encodeURIComponent(params.get('period') || '')}` : '/account?welcome=1', { replace: true });
+      navigate(plan ? `/dashboard/membership?plan=${encodeURIComponent(plan)}&period=${encodeURIComponent(params.get('period') || '')}` : '/dashboard/profile?welcome=1', { replace: true });
     } catch (err) {
       setFormError(applyServerErrors(err, setError));
     }

@@ -42,7 +42,8 @@ describe('redirects', () => {
     expect(safeNext('//evil.com')).toBeNull();
     expect(safeNext('https://evil.com')).toBeNull();
     expect(homeFor({ role: 'admin' })).toBe('/admin');
-    expect(homeFor({ role: 'member' })).toBe('/account');
+    expect(homeFor({ role: 'member' })).toBe('/dashboard');
+    expect(homeFor({ role: 'trainer' })).toBe('/trainer');
   });
 });
 

@@ -70,3 +70,17 @@ html.light {
   .input[aria-invalid='true'] { border-color: rgb(var(--danger)); }
   .skeleton { @apply animate-pulse rounded-brand bg-elevated; }
 }
+
+/* Typography for Markdown articles. */
+@layer components {
+  .prose-aurum { @apply text-lg leading-relaxed text-ink/85; }
+  .prose-aurum > * + * { @apply mt-5; }
+  .prose-aurum h2 { @apply mt-12 text-3xl font-semibold text-ink; }
+  .prose-aurum h3 { @apply mt-8 text-2xl font-semibold text-ink; }
+  .prose-aurum ul { @apply list-disc space-y-2 pl-6; }
+  .prose-aurum ol { @apply list-decimal space-y-2 pl-6; }
+  .prose-aurum blockquote { @apply border-l-2 border-gold pl-5 italic text-muted; }
+  .prose-aurum strong { @apply font-semibold text-ink; }
+  .prose-aurum code { @apply rounded bg-elevated px-1.5 py-0.5 text-sm; }
+  .prose-aurum img { @apply rounded-brand; }
+}

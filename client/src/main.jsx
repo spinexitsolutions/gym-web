@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HelmetProvider } from 'react-helmet-async';
 import { ThemeProvider } from './context/ThemeContext.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
+import { ToastProvider } from './context/ToastContext.jsx';
 import App from './App.jsx';
 import './styles.css';
 
@@ -25,7 +26,9 @@ createRoot(document.getElementById('root')).render(
         <BrowserRouter>
           <ThemeProvider>
             <AuthProvider>
-              <App />
+              <ToastProvider>
+                <App />
+              </ToastProvider>
             </AuthProvider>
           </ThemeProvider>
         </BrowserRouter>
@@ -33,3 +36,8 @@ createRoot(document.getElementById('root')).render(
     </HelmetProvider>
   </StrictMode>,
 );
+
+// Installable PWA: the service worker caches the app shell for fast, offline-tolerant loads (production only).
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+}

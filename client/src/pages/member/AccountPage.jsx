@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQueryClient } from '@tanstack/react-query';
-import { Camera, MailWarning, ShieldCheck, LogOut, Trash2, BadgeCheck, Crown } from 'lucide-react';
+import { Camera, MailWarning, ShieldCheck, LogOut, Trash2, BadgeCheck } from 'lucide-react';
+import { PushToggle } from '../../components/dashboard/PushToggle.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { api } from '../../services/api.js';
 import { Seo } from '../../components/layout/Seo.jsx';
@@ -257,23 +258,21 @@ export default function AccountPage() {
   };
 
   return (
-    <div className="container max-w-5xl py-12 md:py-16">
+    <div className="max-w-5xl">
       <Seo title="My account" noindex />
       {params.get('welcome') && (
         <div className="mb-8 rounded-brand border border-gold/40 bg-gold/5 p-5">
           <p className="font-semibold">Welcome to the club, {user.name.split(' ')[0]}!</p>
           <p className="mt-1 text-sm text-muted">
-            {params.get('plan')
-              ? <>You picked the <span className="capitalize text-ink">{params.get('plan')}</span> plan. Online checkout is being enabled; to start today, <Link to="/contact?interest=membership" className="text-gold underline">contact the front desk</Link> and we'll activate it for you.</>
-              : 'Complete your profile below so your coach can tailor your first session.'}
+            Complete your profile below so your coach can tailor your first session.
           </p>
         </div>
       )}
 
       <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="eyebrow">My account</p>
-          <h1 className="mt-2 text-4xl font-semibold">{user.name}</h1>
+          <p className="eyebrow">Profile & settings</p>
+          <h1 className="mt-2 text-3xl font-semibold md:text-4xl">{user.name}</h1>
           <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted">
             {user.email}
             {user.emailVerified ? <Badge tone="success"><BadgeCheck className="h-3 w-3" aria-hidden />Verified</Badge> : <Badge tone="danger">Not verified</Badge>}
@@ -291,18 +290,6 @@ export default function AccountPage() {
       )}
 
       <div className="grid gap-6">
-        {user.role === 'member' && (
-          <section className="flex flex-col gap-4 rounded-brand border border-gold/30 bg-gradient-to-br from-gold/10 to-surface p-6 sm:flex-row sm:items-center sm:justify-between md:p-8">
-            <div className="flex items-start gap-4">
-              <Crown className="h-6 w-6 shrink-0 text-gold" aria-hidden />
-              <div>
-                <h2 className="font-sans text-lg font-semibold">Membership</h2>
-                <p className="mt-1 text-sm text-muted">You don't have an active membership yet. Compare plans and choose the one that fits your goals.</p>
-              </div>
-            </div>
-            <Button to="/memberships" size="sm">View plans</Button>
-          </section>
-        )}
         <Card id="photo" title="Profile photo"><AvatarUploader user={user} onUser={onUser} /></Card>
         <Card id="account" title="Account details"><AccountForm user={user} onUser={onUser} /></Card>
         {user.role === 'member' && (
@@ -315,6 +302,7 @@ export default function AccountPage() {
             <p className="font-mono text-2xl tracking-widest text-gold">{profile.referralCode}</p>
           </Card>
         )}
+        <Card id="push" title="Push notifications"><PushToggle /></Card>
         <Card id="security" title="Security" description="Changing your password signs you out of every other device.">
           <PasswordForm />
           <div className="mt-8 flex flex-col gap-3 border-t border-line/10 pt-6 sm:flex-row sm:items-center sm:justify-between">

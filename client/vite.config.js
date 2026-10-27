@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     port: 5173,
     // Same-origin proxy in development so auth cookies are first-party.
-    proxy: { '/api': { target: process.env.VITE_API_PROXY || 'http://localhost:5000', changeOrigin: true } },
+    proxy: Object.fromEntries(['/api', '/sitemap.xml', '/robots.txt'].map((p) => [p, { target: process.env.VITE_API_PROXY || 'http://localhost:5000', changeOrigin: true }])),
   },
   build: {
     target: 'es2020',

@@ -7,8 +7,9 @@
 //        npm run seed -- --reset (removes previously seeded demo content first)
 import { connectDB, disconnectDB } from '../config/db.js';
 import {
-  MembershipPlan, Trainer, WorkoutProgram, Testimonial, Faq, Challenge, Gallery, WebsiteSettings, Coupon,
+  MembershipPlan, Trainer, WorkoutProgram, Testimonial, Faq, Challenge, Gallery, WebsiteSettings, Coupon, ClassSchedule, BlogPost,
 } from '../models/index.js';
+import { gymDay, gymLocalToUtc, addDays, dayOfWeek } from '../utils/dates.js';
 import { defaultSettings, PHOTOS } from '../services/settings.defaults.js';
 
 const rupees = (n) => Math.round(n * 100);
@@ -172,6 +173,27 @@ const gallery = [
   ['Platform lifting', 'gym', PHOTOS.deadlift], ['Kettlebell zone', 'equipment', PHOTOS.kettlebell],
 ];
 
+// Weekly timetable for the next two weeks (DEMO — edit in Admin → Classes).
+const timetable = [
+  { title: 'HIIT 45', trainer: 'vikram-rao', program: 'aurum-hiit-45', days: [1, 3, 5], time: '07:00', minutes: 45, capacity: 16, location: 'Functional Zone' },
+  { title: 'Mobility & Flow', trainer: 'sara-khan', program: 'mobility-flow-yoga', days: [2, 4], time: '18:30', minutes: 60, capacity: 14, location: 'Mind & Body Studio' },
+  { title: 'Strength Foundations', trainer: 'arjun-mehta', program: 'foundations-of-strength', days: [6], time: '09:00', minutes: 75, capacity: 10, location: 'Strength Arena' },
+  { title: 'Endurance Ride', trainer: 'rohan-das', program: 'endurance-engine', days: [1, 3], time: '19:00', minutes: 45, capacity: 20, location: 'Cardio Deck' },
+];
+
+const posts = [
+  {
+    title: 'How to warm up for a heavy lifting session', slug: 'how-to-warm-up-for-heavy-lifting', tags: ['strength', 'technique'], coverImage: PHOTOS.deadlift,
+    excerpt: 'A ten-minute routine that raises your temperature, opens the joints you need and primes the movement pattern.',
+    content: `A good warm-up does three jobs: it raises your body temperature, moves the joints you are about to load, and rehearses the exact pattern you will train.\n\n## 1. General warm-up (3–5 minutes)\n\nRow, cycle or walk briskly until you feel warm and your breathing picks up slightly.\n\n## 2. Mobility for the session (3 minutes)\n\n- **Squat day:** ankle rocks, goblet squat holds, hip airplanes\n- **Press day:** band pull-aparts, wall slides, thoracic rotations\n- **Deadlift day:** hip hinges with a dowel, glute bridges, cat–camel\n\n## 3. Ramp-up sets\n\nStart with the empty bar for 8–10 reps, then add weight in 3–4 jumps, cutting reps as you go (for example 5, 3, 2, 1) until you reach your first working set.\n\n> Feeling pain rather than effort? Stop and speak to a coach before continuing.`,
+  },
+  {
+    title: 'Protein made simple: how much do you really need?', slug: 'protein-made-simple', tags: ['nutrition'], coverImage: PHOTOS.woman,
+    excerpt: 'Practical protein targets for building muscle or losing fat, with easy Indian food examples.',
+    content: `Protein helps you build and keep muscle, recover between sessions and stay full when you are in a calorie deficit.\n\n## A practical target\n\nMost people who train regularly do well with roughly **1.6–2.2 g of protein per kg of body weight per day**, spread over 3–5 meals.\n\n## Easy sources\n\n- Paneer, curd and milk\n- Eggs, chicken and fish\n- Dal, chana, rajma and soy chunks\n- Whey or plant protein if you struggle to hit your target from food\n\n## Keep it sustainable\n\nBuild each meal around a protein source, then add vegetables and a carbohydrate you enjoy.\n\n*General information only — if you have a kidney condition or other medical concerns, consult your doctor or a registered dietitian before changing your diet.*`,
+  },
+];
+
 async function upsertBySlug(Model, docs) {
   for (const doc of docs) await Model.updateOne({ slug: doc.slug }, { $set: doc }, { upsert: true, runValidators: true });
 }
@@ -217,6 +239,23 @@ async function main() {
     await Gallery.insertMany(gallery.map(([title, category, image], i) => ({ title, category, image, isDemo: true, order: i })));
   }
 
+  if (!(await ClassSchedule.exists({ startAt: { $gte: new Date() } }))) {
+    const programIds = Object.fromEntries((await WorkoutProgram.find({}, 'slug')).map((p) => [p.slug, p._id]));
+    const docs = [];
+    for (let i = 1; i <= 14; i += 1) {
+      const day = gymDay(addDays(new Date(), i));
+      for (const t of timetable) {
+        if (!t.days.includes(dayOfWeek(day)) || !trainerIds[t.trainer]) continue;
+        const startAt = gymLocalToUtc(day, t.time);
+        docs.push({ title: t.title, trainer: trainerIds[t.trainer], program: programIds[t.program], location: t.location, capacity: t.capacity, waitlistLimit: 10, startAt, endAt: new Date(startAt.getTime() + t.minutes * 60000), description: 'Demo class from the seed script.' });
+      }
+    }
+    await ClassSchedule.insertMany(docs);
+  }
+  await upsertBySlug(BlogPost, posts.map((p) => ({ ...p, status: 'published' })));
+  // Keep the original publish date on re-runs.
+  await BlogPost.updateMany({ slug: { $in: posts.map((p) => p.slug) }, publishedAt: null }, { publishedAt: new Date() });
+
   await Coupon.updateOne(
     { code: 'WELCOME10' },
     { $setOnInsert: { code: 'WELCOME10', description: 'DEMO coupon: 10% off the first membership (max ₹2,000)', discountType: 'percent', value: 10, maxDiscountPaise: rupees(2000), perUserLimit: 1 } },
@@ -227,7 +266,7 @@ async function main() {
     await WebsiteSettings.create({ key: 'site', draft: defaultSettings, published: defaultSettings, publishedAt: new Date() });
   }
 
-  console.log(`Seeded demo content: ${trainers.length} trainers, ${plans.length} plans, ${programs.length} programs, ${faqs.length} FAQs, ${events.length} events, gallery, sample testimonials, coupon WELCOME10.`);
+  console.log(`Seeded demo content: ${trainers.length} trainers, ${plans.length} plans, ${programs.length} programs, ${faqs.length} FAQs, ${events.length} events, 2 weeks of classes, ${posts.length} articles, gallery, sample testimonials, coupon WELCOME10.`);
   console.log('No members, payments or attendance were created. Run `npm run create-admin` to create the first admin.');
   await disconnectDB();
 }

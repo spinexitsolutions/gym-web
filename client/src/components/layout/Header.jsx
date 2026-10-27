@@ -7,12 +7,14 @@ import { Button } from '../ui/Button.jsx';
 import { useTheme } from '../../context/ThemeContext.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { cn } from '../../utils/cn.js';
+import { homeFor } from '../../utils/redirect.js';
 
 export const NAV = [
   { to: '/about', label: 'About' },
   { to: '/memberships', label: 'Memberships' },
   { to: '/programs', label: 'Programs' },
   { to: '/trainers', label: 'Trainers' },
+  { to: '/schedule', label: 'Schedule' },
   { to: '/contact', label: 'Contact' },
 ];
 
@@ -30,7 +32,7 @@ function ThemeToggle() {
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const { user, isStaff } = useAuth();
+  const { user } = useAuth();
   const location = useLocation();
   const menuRef = useRef(null);
   const isHome = location.pathname === '/';
@@ -53,7 +55,7 @@ export function Header() {
     return () => { document.body.style.overflow = ''; window.removeEventListener('keydown', onKey); };
   }, [open]);
 
-  const accountHref = user ? (isStaff ? '/admin' : '/account') : '/login';
+  const accountHref = user ? homeFor(user) : '/login';
   const solid = scrolled || !isHome || open;
 
   return (
