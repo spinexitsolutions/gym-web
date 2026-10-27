@@ -1,89 +1,66 @@
-# Build checklist
+# Build checklist & testing guide
 
-Legend: ✅ done (frontend + backend + database + validation) · 🟡 partial (what exists is real; the rest is listed) · ⬜ next
+All seven phases are implemented. ✅ = frontend + backend + database + validation in place.
 
-## Phase 1 — Architecture & setup ✅
-- ✅ npm workspaces (`server`, `client`), scripts, `.editorconfig`, `.nvmrc`, `.gitignore`
-- ✅ Env validation with clear errors, `server/.env.example` and `client/.env.example` (placeholders only)
-- ✅ Docs: architecture, folder structure, design system, database schema, API, security, integrations, deployment
-
-## Phase 2 — Public website 🟡
-- ✅ Home: cinematic hero (image or video, 3D dumbbell on desktop), Join/Explore CTAs, animated stats (manual or live
-  DB counts), about, facilities, featured trainers, pricing with period toggle, featured programs, before/after
-  slider (consented items only), testimonials (sample badge), events & challenges, BMI / calorie / workout-burn
-  tools with disclaimer, FAQ, contact + Google Map + form, newsletter, WhatsApp button, footer with socials
-- ✅ About (story, mission, vision, facilities, gallery, certifications, trainers, safety & hygiene)
-- ✅ Memberships (4 tiers × 4 periods, comparison table, benefits, joining fee, terms/cancellation/refund policies)
-- ✅ Programs list (search, category & difficulty filters, pagination) and program detail (eligibility, coaches)
-- ✅ Trainers list (search, specialisation filter) and trainer profile (qualifications, certifications, slots)
-- ✅ Contact page (form with spam protection, details, hours, map, WhatsApp, stores inquiries in DB)
-- ✅ Dark/light theme, admin-driven colours & fonts, SEO tags + JSON-LD, robots.txt, responsive, skeletons,
-  error states with retry, empty states, reduced-motion support, keyboard navigation
-- ⬜ Blog pages, sitemap.xml (Phase 6), PWA (Phase 6)
-- Note: "Request a personal training session" currently goes to the contact form (pre-filled); online slot
-  booking arrives with Phase 5.
-
-## Phase 3 — Models, APIs, auth, RBAC ✅
-- ✅ 26 Mongoose models with validation, refs and indexes (see DATABASE.md)
-- ✅ Register (+ referral code), email verification, login with lockout, refresh rotation, logout / logout-all,
-  forgot & reset password, `/me`
-- ✅ Profile management: account details, avatar upload (Cloudinary, progress bar), personal details, fitness goals,
-  emergency contact, medical notes, notification prefs, password change, account deletion request
-- ✅ RBAC middleware (owner/admin/staff/trainer/member), CSRF, sanitising, rate limits, upload checks, audit log
-- ✅ Secure `create-admin` script; demo seed script
-- ✅ Website-settings CMS API with draft → publish
-
-## Phase 4 — Admin dashboard ⬜ (next)
-Admin layout & navigation · overview KPIs and charts from real data · CMS editors for every settings section with
-image upload/preview/progress, save draft / publish / discard · CRUD: plans, trainers, programs, testimonials,
-gallery, FAQs, events, announcements, blog, coupons · members list (search/filter/sort/paginate, profile, suspend,
-CSV export) · inquiries · staff roles · audit log viewer · integration status.
-
-## Phase 5 — Member dashboard & operations ⬜
-Membership purchase & renewal with Razorpay (server signature verification + webhook), coupons & referrals,
-payment history & PDF invoices · PT & group-class booking with capacity, overlap prevention, waitlist,
-cancel/reschedule · QR check-in with short-lived tokens, attendance history, admin corrections with audit ·
-progress tracking & charts · workout plans · notifications · support tickets.
-
-## Phase 6 — Advanced features & hardening ⬜
-Expiry & renewal reminder jobs, email receipts, challenges leaderboard, reviews & ratings, reports & CSV exports,
-blog, sitemap, PWA + optional push (with consent), AI fitness assistant (optional, with safety disclaimer),
-security monitoring.
-
-## Phase 7 — Testing, deployment, docs ⬜
-E2E tests, load checks, backup & restore runbook, production deployment guide expansion.
-
----
-
-# How to test what exists today
-
-Start MongoDB, then `npm run seed && npm run create-admin && npm run dev`.
-
-| Feature | Steps | Expected |
+| Phase | Status | Scope |
 | --- | --- | --- |
-| Public site | Open http://localhost:5173 | All homepage sections render with seeded content; resize to mobile and use the ☰ menu |
-| Theme | Click the sun/moon icon | Switches dark/light; persists on reload |
-| CMS content | `PATCH /api/settings/draft` as admin (e.g. with the browser console: see below), then `POST /api/settings/publish` | Site shows the change only after publish |
-| Register | /register → submit empty form, then valid data | Inline errors; then redirected to /account with a welcome note |
-| Verify email | Copy the `[email:dev] … link=` URL from the API console | "Email verified"; badge turns green |
-| Login lockout | Enter a wrong password 5 times | 6th attempt returns "Too many failed attempts" |
-| Forgot / reset | /forgot-password → open the logged link → new password | Old sessions signed out; log in with new password |
-| Profile | /account → edit details, goals, emergency contact → Save | Saved message; values persist after reload |
-| Avatar | Upload a JPG (needs Cloudinary keys) | Progress %, new photo; without keys a clear 503 message |
-| Deletion request | /account → Request account deletion → cancel | Pending date shown, then cleared |
-| Contact form | Submit the form on /contact | Success message; inquiry stored in `contactinquiries` |
-| Spam | Fill the hidden `website` field via devtools and submit | Success shown but nothing stored |
-| RBAC | As a member, `fetch('/api/settings/draft')` | 403 |
-| Programs/trainers | Use search and filters | URL updates (shareable); results filter server-side |
-| BMI/calories | Home → Fitness tools | Results update live |
+| 1. Architecture & setup | ✅ | Workspaces, env validation, `.env.example`, docs |
+| 2. Public website | ✅ | Home (all sections), About, Memberships, Programs, Trainers, Schedule, Blog, Events, Contact, 404; dark/light theme, SEO, JSON-LD, sitemap, 3D hero |
+| 3. Models, APIs, auth, RBAC | ✅ | 30 models, JWT cookies with rotation, CSRF, roles, profile management |
+| 4. Admin dashboard & CMS | ✅ | KPIs/charts, website CMS with draft/preview/publish, plans, trainers, programs, gallery, testimonials, FAQs, events, announcements, blog, coupons, team roles, audit log, system status |
+| 5. Members, memberships, payments, bookings, attendance | ✅ | Member dashboard, Razorpay checkout + webhook + invoices + refunds, offline payments, PT & class booking with waitlists, QR attendance |
+| 6. Notifications, reports, advanced features, hardening | ✅ | In-app/email/push notifications, reminders, reports & CSV, challenges & leaderboard, reviews, referral rewards, PWA, AI assistant, CSP, rate limits |
+| 7. Testing, deployment, docs | ✅ | Unit, HTTP, component and MongoDB integration tests, CI, Dockerfile/compose, backup scripts, deployment guide |
 
-Browser-console snippet for admins (signed in):
-```js
-const { data } = await (await fetch('/api/auth/csrf')).json();
-const h = { 'Content-Type': 'application/json', 'X-CSRF-Token': data.csrfToken };
-await fetch('/api/settings/draft', { method: 'PATCH', headers: h, body: JSON.stringify({ hero: { title: 'Train like royalty' } }) });
-await fetch('/api/settings/publish', { method: 'POST', headers: h });
+## Advanced features (spec §7)
+| # | Feature | Where |
+| --- | --- | --- |
+| 1 | QR entry & attendance | Member → Check-in QR · Admin → Check-in (camera scanner) |
+| 2–3 | Expiry & renewal reminders | `jobs/tasks.js` (7-day, 1-day, expiry) |
+| 4–6 | PT booking, group classes, waitlists | Member → Book · Admin → Classes / Bookings |
+| 7 | Coupons & referrals | Admin → Coupons · referral code at sign-up → automatic reward coupon |
+| 8 | Workout & goal tracking | Member → Progress / Workout plans · Trainer → plan builder |
+| 9 | BMI & calorie tools | Homepage tools |
+| 10 | Challenges & leaderboard | Admin → Events · `/events/:slug` |
+| 11 | Feedback & ratings | Member → Feedback · Admin → Reviews |
+| 12–13 | PDF invoices & email receipts | Payments pages, receipt email with PDF |
+| 14 | Search & filtering | Trainers, programs, blog, every admin table |
+| 15–16 | PWA & optional push | `manifest.webmanifest`, `sw.js`, Profile → Push notifications |
+| 17 | Multi-role access | owner/admin/staff/trainer/member (server-enforced) |
+| 18 | Analytics & exports | Admin → Overview / Reports, CSV everywhere |
+| 19 | Spam protection | Honeypot, timing, link heuristic, IP-hash throttle, rate limits |
+| 20 | Backup & recovery | `scripts/backup.sh`, `scripts/restore.sh`, DEPLOYMENT.md |
+| 21 | Accessibility | Skip links, focus traps, labelled controls, keyboard tabs/sliders, reduced motion |
+| 22 | SEO | Per-page meta, canonical, Open Graph, JSON-LD, sitemap, robots |
+| 23 | Rate limiting & monitoring | express-rate-limit, audit log, error log, Admin → System |
+| 24 | AI fitness assistant | Member → AI assistant (requires `ANTHROPIC_API_KEY`) |
+
+## Automated tests
+```bash
+npm run lint && npm test && npm run build
+TEST_MONGO_URI=mongodb://127.0.0.1:27017/aurum_test npm test -w server   # + 19 MongoDB end-to-end tests
 ```
+GitHub Actions (`.github/workflows/ci.yml`) runs lint, all tests against a MongoDB service, and the build on every push.
 
-Automated: `npm test` (29 unit/HTTP/component tests) and, with MongoDB,
-`TEST_MONGO_URI=mongodb://127.0.0.1:27017/aurum_test npm test -w server` (9 more end-to-end API tests).
+## Manual test script
+Start MongoDB, then `npm run seed && npm run create-admin && npm run dev` (website :5173, API :5000). Without SMTP, email links
+are printed in the API console.
+
+| Area | Steps | Expected |
+| --- | --- | --- |
+| CMS | Admin → Site content → Homepage hero → edit title → Save draft → Preview draft → Publish | Preview shows the change with a blue banner; public site changes only after Publish |
+| Theme | Brand & theme → change accent colour & heading font → Publish | Whole site and dashboards adopt the new colour/font |
+| Plans | Admin → Membership plans → edit Premium price | Pricing cards and checkout use the new price |
+| Sign-up & verify | Register → open the console link | Email verified; checkout unlocked |
+| Purchase | Member → Membership → choose plan, coupon `WELCOME10` → Pay | Sandbox dialog (no keys) or Razorpay test checkout → membership active, receipt + invoice PDF |
+| Renewal | Pay again while active | New period starts when the current one ends; no joining fee |
+| Offline sale | Admin → Members → member → Record payment (cash) | Membership active, invoice issued, audit entry |
+| Refund | Member requests refund → Admin → Payments → refund | Status refunded; Razorpay refund for online payments |
+| PT booking | Member → Book → trainer → slot | Booked; slot disappears for others; trainer sees it in `/trainer` |
+| Classes | Admin → Classes → Weekly series; book as two members with capacity 1 | Second member waitlisted; promoted when the first cancels (notification) |
+| Check-in | Member → Check-in QR; Admin → Check-in → scan with a phone/webcam | Check-in, then check-out on the next scan after 5 min; duplicates rejected |
+| Expiry reminders | Admin → Memberships → set an end date 6 days ahead → run `expiry-reminders` (wait for 10:00 or call the task) | Reminder email + notification, sent once |
+| Support | Member opens ticket; staff replies with an internal note and a reply | Member sees only the reply |
+| Reports | Admin → Overview / Reports | KPIs and charts reflect the above activity; CSV exports download |
+| RBAC | As staff, open `/admin/website`; as member, open `/admin` | Staff sees no website menu (API returns 403); member is redirected to `/dashboard` |
+| PWA | Production build → open on a phone → "Add to Home screen" | Installs with icon and shortcuts; offline page when disconnected |

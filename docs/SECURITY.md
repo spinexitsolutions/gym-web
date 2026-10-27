@@ -18,4 +18,10 @@
 | Logging | Request logs contain method, path, status and timing only — no bodies, cookies or query strings. Env validation errors never print values |
 | Spam | Honeypot, minimum fill time, link-count heuristic, per-IP-hash throttling (IPs stored hashed) |
 | Secrets | Only in environment variables; `.env.example` contains placeholders; `.env` is git-ignored |
-| Payments (Phase 5) | Server-side Razorpay signature verification + webhook; card data never reaches this server |
+| Payments | Server-side pricing; HMAC signature check **and** Razorpay API confirmation of order/amount/status; signed webhook on the raw body; idempotent completion; card data never reaches this server; sandbox impossible in production |
+| QR check-in | 60-second JWTs with a dedicated audience (session tokens cannot be replayed as QR codes), no personal data, replay and duplicate-visit protection, unique member+day index |
+| Bookings | Atomic seat reservation, unique indexes against double booking, ownership checks on cancel/reschedule |
+| Content Security Policy | Strict CSP: scripts only from self and Razorpay Checkout; frames only Razorpay and Google Maps; `object-src 'none'`; Markdown rendered without raw HTML |
+| Privacy | Medical notes visible only to the member, admins/staff and their assigned trainer; IPs stored hashed for spam control; account deletion anonymises personal data while keeping legally required financial records; unverified accounts without purchases are removed after 30 days |
+| CSV exports | Formula-injection protection (cells starting with = + - @ are escaped); exports are admin-only and audited |
+| Monitoring | 5xx errors captured (without request bodies) for Admin → System; health endpoint |

@@ -1,13 +1,13 @@
 # Architecture
 
 ```
-          Browser (React SPA, PWA later)
+          Browser (React SPA, installable PWA)
                 │  same-origin /api  (HTTP-only cookies + X-CSRF-Token header)
                 ▼
    Reverse proxy / Vite dev proxy ──► Express API (server/)
                                         ├─ middleware: helmet, CORS, rate limit, sanitize, CSRF, auth/RBAC, validate
                                         ├─ routes → controllers → services → Mongoose models
-                                        ├─ jobs (expiry reminders, Phase 6)
+                                        ├─ jobs (activation, expiry, reminders, cleanup — DB-leased)
                                         └─ integrations: Cloudinary · Razorpay · Nodemailer
                                                      │
                                                      ▼
@@ -35,21 +35,22 @@
 │   │   ├── server.js         boots DB + HTTP server, graceful shutdown
 │   │   ├── app.js            express app & middleware order
 │   │   ├── config/           env validation (zod), db, cloudinary
-│   │   ├── models/           26 Mongoose models (+ index.js)
+│   │   ├── models/           30 Mongoose models (+ index.js)
 │   │   ├── controllers/      HTTP handlers (thin)
 │   │   ├── routes/           routers per module, mounted in routes/index.js
 │   │   ├── middleware/       auth/RBAC, csrf, validate, sanitize, rateLimit, upload, error
-│   │   ├── services/         business logic: auth, tokens, settings, email, upload, audit
+│   │   ├── services/         business logic: auth, tokens, pricing, membership, gateway (Razorpay),
+│   │   │                     invoice (PDF), booking, notification, email, upload, settings, audit, assistant
 │   │   ├── validators/       zod request schemas
 │   │   ├── utils/            ApiError, responses, pagination, crypto
-│   │   ├── jobs/             scheduled tasks (Phase 6)
+│   │   ├── jobs/             node-cron scheduler + idempotent tasks
 │   │   └── scripts/          seed.js, createAdmin.js
 │   └── tests/                vitest + supertest
 └── client/
     ├── index.html, vite.config.js, tailwind.config.js
     └── src/
         ├── main.jsx, App.jsx  providers + lazy routes
-        ├── layouts/           PublicLayout, AuthLayout (Admin/Member layouts in Phases 4–5)
+        ├── layouts/           PublicLayout, AuthLayout, DashboardLayout (admin/member/trainer)
         ├── pages/             public/, auth/, member/
         ├── components/        ui/ (Button, Img, States…), layout/ (Header, Footer, Seo…),
         │                      sections/ (Hero, Pricing, FitnessTools…), three/ (3D dumbbell)
@@ -57,7 +58,10 @@
         ├── hooks/             useSettings, useInView, useReducedMotion, useDebounced
         ├── services/          api.js (fetch client), content.js
         ├── forms/             Field components, shared zod schemas
-        ├── admin/ member/     dashboards (Phases 4–5)
+        ├── admin/             AdminApp, resource configs, CMS sections, pages
+        ├── member/            MemberApp, checkout (Razorpay/sandbox), pages
+        ├── trainer/           TrainerApp (schedule, members, plan builder, availability)
+        ├── components/dashboard/  DataTable, Modal, FormBuilder, ResourcePage, ImageUpload, QrScanner, TicketThread…
         ├── utils/             format, fitness maths, responsive media, redirects
         └── __tests__/
 ```
@@ -105,3 +109,31 @@ errors to 4xx responses `{ success: false, message, details? }`, and hides inter
   below the fold, and falls back to a neutral panel if a source fails.
 - **Accessibility:** skip link, visible focus rings, labelled form controls with `aria-invalid`/`aria-describedby`,
   keyboard-operable tabs, accordion, before/after slider and mobile menu (Esc closes).
+
+## Dashboards
+
+One `DashboardLayout` (sidebar, mobile drawer, notification bell) powers three apps with role-filtered navigation:
+
+| App | Path | Roles | Highlights |
+| --- | --- | --- | --- |
+| Admin | `/admin` | owner, admin, staff (front-desk subset), trainer (check-in) | KPIs & charts, CMS, resource managers, members, payments, classes, check-in, inbox, team, audit, system |
+| Member | `/dashboard` | member | membership & checkout, payments, booking, QR check-in, progress, workouts, challenges, support, assistant, profile |
+| Trainer | `/trainer` | trainer | schedule, assigned members, workout plan builder, availability, check-in |
+
+Admin content screens are generated from declarative configs (`admin/resources.jsx`, `admin/settingsSections.js`) rendered by
+`ResourcePage` + `FormBuilder`, so adding a field is a one-line change. Server-side validation errors map back onto the exact
+form field (including nested repeater paths).
+
+## Background jobs
+
+`server/src/jobs/scheduler.js` runs with `node-cron` in the gym time zone. Each job takes a lease in `SystemState`, so several
+API instances never run the same job concurrently, and every side effect is idempotent (e.g. reminders are claimed in
+`Membership.remindersSent` before sending).
+
+| Job | Schedule | Effect |
+| --- | --- | --- |
+| activate-memberships | every 15 min | Starts renewals whose start date has arrived |
+| expire-memberships | hourly | Marks ended memberships expired and notifies members without a renewal |
+| expiry-reminders | daily 10:00 | Email + in-app reminders 7 days and 1 day before expiry |
+| complete-sessions | hourly | Completes past classes/class bookings, closes stale waitlists |
+| purge-unverified | daily 03:30 | Removes unverified accounts with no purchases after 30 days |

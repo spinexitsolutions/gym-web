@@ -11,12 +11,17 @@ import { Seo } from '../../components/layout/Seo.jsx';
 import { formatDate } from '../../utils/format.js';
 
 export default function MemberCheckInPage() {
-  const qr = useQuery({ queryKey: ['qr'], queryFn: async () => (await api.get('/attendance/qr')).data, refetchInterval: 50_000, refetchOnWindowFocus: true, retry: false });
+  const qr = useQuery({ queryKey: ['qr'], queryFn: async () => (await api.get('/attendance/qr')).data, refetchOnWindowFocus: true, retry: false });
   const att = useQuery({ queryKey: ['attendance', 'me'], queryFn: async () => (await api.get('/attendance/me')).data, refetchInterval: 30_000 });
   const [now, setNow] = useState(Date.now());
   useEffect(() => { const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, []);
-  const secondsLeft = qr.data ? Math.max(0, Math.round((new Date(qr.data.expiresAt) - now) / 1000)) : 0;
-  useEffect(() => { if (qr.data && secondsLeft === 0 && !qr.isFetching) qr.refetch(); }, [secondsLeft, qr]);
+  // Count down from when *this device* received the code (ttlSeconds), not the server's expiresAt timestamp,
+  // so a phone whose clock is wrong cannot trigger a tight refetch loop. Refresh a few seconds early.
+  const expiresLocal = qr.dataUpdatedAt + ((qr.data?.ttlSeconds || 60) - 5) * 1000;
+  const secondsLeft = qr.data ? Math.max(0, Math.round((expiresLocal - now) / 1000)) : 0;
+  useEffect(() => {
+    if (qr.data && secondsLeft === 0 && !qr.isFetching && now - qr.dataUpdatedAt > 10_000) qr.refetch();
+  }, [secondsLeft, qr, now]);
 
   return (
     <>

@@ -1,0 +1,26 @@
+# Local or single-server deployment: MongoDB + the app.
+#   cp server/.env.example server/.env   (set JWT_ACCESS_SECRET etc.)
+#   docker compose up -d --build
+#   docker compose exec app node server/src/scripts/seed.js
+#   docker compose exec app node server/src/scripts/createAdmin.js
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes: [mongo-data:/data/db]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      retries: 5
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: server/.env
+    environment:
+      NODE_ENV: production
+      MONGO_URI: mongodb://mongo:27017/aurum_gym
+    ports: ["5000:5000"]
+    depends_on:
+      mongo: { condition: service_healthy }
+volumes:
+  mongo-data:

@@ -1,84 +1,61 @@
 # Aurum Fitness Club — premium gym website & management system (MERN)
 
-A full-stack luxury gym platform: a cinematic public website that the owner edits from an admin dashboard,
-plus member accounts, memberships, Razorpay payments, bookings, QR attendance and reports.
-
-> **Status:** built phase by phase. See [docs/CHECKLIST.md](docs/CHECKLIST.md) for exactly what is done and
-> what is next. Nothing listed as "next" is presented in the UI as working.
+A complete luxury gym platform: a cinematic, admin-editable public website plus memberships, Razorpay payments, PT and class
+bookings with waitlists, QR attendance, member/trainer/admin dashboards, notifications, reports and an optional AI fitness
+assistant.
 
 | Layer | Stack |
 | --- | --- |
-| Frontend | React 18 + Vite, Tailwind CSS, React Router, Framer Motion, React Three Fiber, Lucide, Recharts, React Hook Form + Zod, TanStack Query |
-| Backend | Node.js 20+, Express 4, MongoDB + Mongoose 8, JWT in HTTP-only cookies, bcrypt (bcryptjs), Zod validation |
-| Services | Cloudinary (media), Razorpay (payments), Nodemailer (email) |
+| Frontend | React 18 + Vite, Tailwind CSS, React Router, Framer Motion, React Three Fiber, Lucide, Recharts, React Hook Form + Zod, TanStack Query, PWA |
+| Backend | Node.js 20+, Express 4, MongoDB + Mongoose 8, JWT in HTTP-only cookies, bcrypt, Zod, node-cron, PDFKit |
+| Services | Razorpay (payments), Cloudinary (media), Nodemailer/SMTP (email), Web Push (optional), Anthropic API (optional assistant) |
 
 ## Quick start
-
-Prerequisites: Node.js 20.11+, and MongoDB 6+ (local, Docker or a free MongoDB Atlas cluster).
+Prerequisites: Node.js 20.11+, MongoDB 6+ (local, Docker or Atlas).
 
 ```bash
-# 1. Install everything (npm workspaces: server + client)
 npm install
-
-# 2. Configure the API
-cp server/.env.example server/.env
-#   then edit server/.env — at minimum set MONGO_URI and JWT_ACCESS_SECRET:
-node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
-
-# 3. (optional) MongoDB in Docker
-docker run -d --name aurum-mongo -p 27017:27017 mongo:7
-
-# 4. Demo content + your first admin (no default credentials exist)
-npm run seed
-npm run create-admin
-
-# 5. Run API (http://localhost:5000/api) and website (http://localhost:5173)
-npm run dev
+cp server/.env.example server/.env        # set MONGO_URI and JWT_ACCESS_SECRET
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"   # → JWT_ACCESS_SECRET
+docker run -d --name aurum-mongo -p 27017:27017 mongo:7                    # if you need MongoDB
+npm run seed                              # clearly labelled demo content
+npm run create-admin                      # first owner account — there are no default credentials
+npm run dev                               # website http://localhost:5173 · API http://localhost:5000/api
 ```
+Log in with the owner account → **/admin**. Register a normal account → **/dashboard**. Without Razorpay keys a labelled
+**sandbox gateway** lets you complete purchases locally; without SMTP, emails are printed to the API console.
 
-The Vite dev server proxies `/api` to the API, so cookies are first-party and no CORS setup is needed locally.
-Without SMTP settings, verification and reset emails are **printed to the API console** (with the link) so you
-can test every auth flow offline.
+Production in one command: `docker compose up -d --build` (see [deployment](docs/DEPLOYMENT.md)).
 
 ## Scripts
-
-| Command | What it does |
+| Command | Purpose |
 | --- | --- |
-| `npm run dev` | API (node --watch) + website (Vite) together |
-| `npm test` | Server tests + client tests |
-| `npm run lint` | ESLint (client) |
-| `npm run build` | Production build of the website into `client/dist` |
-| `npm start` | Start the API in production mode |
-| `npm run seed` | Upsert demo content (`-- --reset` to remove earlier demo items first) |
-| `npm run create-admin` | Interactive, secure creation of the owner / admin accounts |
+| `npm run dev` | API (watch) + website (Vite) |
+| `npm run lint` / `npm test` / `npm run build` | Quality gates (CI runs all three) |
+| `npm start` | Production API, also serves `client/dist` |
+| `npm run seed` | Demo plans, trainers, programs, classes, articles, FAQs, events (`-- --reset` removes earlier demo items) |
+| `npm run create-admin` | Owner/admin creation (interactive or `ADMIN_NAME`/`ADMIN_EMAIL`/`ADMIN_PASSWORD`; `--role=staff`, `--promote`) |
+| `scripts/backup.sh`, `scripts/restore.sh` | MongoDB backup and restore |
 
-### Tests
-
-```bash
-npm test                                         # unit + HTTP tests, no database needed
-TEST_MONGO_URI=mongodb://127.0.0.1:27017/aurum_test npm test -w server   # + full API integration tests
-```
-
-The integration suite **drops the database named in `TEST_MONGO_URI`** before and after running — never point it
-at real data.
+## What's included
+- **Public site:** cinematic hero (image/video + lazy 3D dumbbell), animated stats, about, facilities, trainers, pricing with
+  4 billing periods, programs, consented transformations, testimonials, events, BMI/calorie/workout tools, FAQ, contact + map,
+  newsletter, WhatsApp; Memberships (comparison & policies), Programs, Trainers, Schedule, Blog, Events, Contact.
+- **Admin:** live KPIs and charts, full website CMS (theme, fonts, logo, hero, every section, SEO) with draft/preview/publish,
+  managers for plans, trainers, programs, gallery, testimonials, FAQs, events, announcements, blog and coupons, members,
+  memberships, payments & refunds, offline sales, classes & bookings, QR check-in, inquiries, support, reviews, team roles,
+  audit log, reports & CSV exports, system status.
+- **Member:** membership & renewal checkout, invoices & refunds, PT/class booking with waitlists, rotating QR check-in,
+  progress charts, workout plans, challenges, notifications, support, feedback, AI assistant, profile & push settings.
+- **Trainer:** schedule, completion/no-show marking, assigned members, workout plan builder, availability.
 
 ## Demo data
-
-`npm run seed` creates clearly labelled sample content: 4 plans, 6 trainers, 9 programs, FAQs, upcoming events,
-a gallery and the `WELCOME10` coupon. Sample testimonials are flagged `isDemo` and show a **"Sample content"**
-badge on the site. No members, payments or attendance are seeded, so dashboards only ever show real data.
-Transformation (before/after) stories are never seeded — they appear only when an admin adds real photos with
-recorded member consent.
-
-Photos are royalty-free images from Unsplash ([license](https://unsplash.com/license)) loaded via their CDN
-with automatic WebP/AVIF; replace them with your own photography from the admin dashboard before launch.
+`npm run seed` creates sample content only: plans, trainers, programs, a two-week class timetable, two articles, FAQs, events,
+gallery and coupon `WELCOME10`. Sample testimonials show a **"Sample content"** badge. No members, payments or attendance are
+created, so every dashboard figure is real data. Before/after transformations are never seeded; they appear only when an admin
+adds photos with recorded member consent. Photos are royalty-free Unsplash images — replace them with your own.
 
 ## Documentation
-
-- [Architecture, folder structure & design system](docs/ARCHITECTURE.md)
-- [Database schema](docs/DATABASE.md)
-- [API reference](docs/API.md)
-- [Security](docs/SECURITY.md)
-- [Third-party services setup](docs/INTEGRATIONS.md)
-- [Deployment](docs/DEPLOYMENT.md)
-- [Build checklist & testing guide](docs/CHECKLIST.md)
+[Architecture & design system](docs/ARCHITECTURE.md) · [Database](docs/DATABASE.md) · [API](docs/API.md) ·
+[Security](docs/SECURITY.md) · [Integrations](docs/INTEGRATIONS.md) · [Deployment & backups](docs/DEPLOYMENT.md) ·
+[Checklist & test guide](docs/CHECKLIST.md)
