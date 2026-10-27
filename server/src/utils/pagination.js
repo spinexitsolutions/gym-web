@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 const MAX_LIMIT = 100;
 
 export function parsePagination(query, { defaultLimit = 20, sortable = ['createdAt'], defaultSort = '-createdAt' } = {}) {
@@ -24,3 +26,6 @@ export async function paginate(model, filter, opts, { select, populate, lean = t
 }
 
 export const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// Aggregation pipelines do not cast strings like find() does; convert validated ids explicitly.
+export const oid = (id) => new mongoose.Types.ObjectId(String(id));

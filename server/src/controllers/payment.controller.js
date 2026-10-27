@@ -8,7 +8,7 @@ import { notify, notifyStaff } from '../services/notification.service.js';
 import { audit } from '../services/audit.service.js';
 import { ok, created } from '../utils/apiResponse.js';
 import { ApiError } from '../utils/ApiError.js';
-import { parsePagination, paginate, escapeRegex } from '../utils/pagination.js';
+import { parsePagination, paginate, escapeRegex, oid } from '../utils/pagination.js';
 import { sendCsv } from '../utils/csv.js';
 import { objectId } from '../validators/common.js';
 
@@ -162,9 +162,9 @@ function paymentFilter(q) {
   const f = {};
   if (q.status) f.status = q.status;
   else f.status = { $ne: 'created' };
-  if (q.plan) f.plan = q.plan;
+  if (q.plan) f.plan = oid(q.plan); // ObjectIds so the same filter works in aggregate() totals
   if (q.method) f.method = q.method;
-  if (q.user) f.user = q.user;
+  if (q.user) f.user = oid(q.user);
   if (q.from || q.to) {
     f.createdAt = {};
     if (q.from) f.createdAt.$gte = new Date(q.from);

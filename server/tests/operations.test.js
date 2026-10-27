@@ -179,6 +179,11 @@ describe.skipIf(!uri)('operations (MongoDB)', () => {
     const r = await agents.owner.get('/api/reports/revenue?months=3');
     expect(r.body.data.series).toHaveLength(3);
     expect((await agents.staff.get('/api/reports/overview')).status).toBe(403);
+    // Filters must work inside aggregations too (string ids are cast to ObjectIds).
+    const byPlan = await agents.owner.get(`/api/reports/revenue?months=1&plan=${plan._id}`);
+    expect(byPlan.body.data.series.at(-1).grossPaise).toBe(550000 + 500000);
+    const payments = await agents.staff.get(`/api/payments?plan=${plan._id}&status=paid`);
+    expect(payments.body.meta.totals.paid).toBe(550000 + 500000);
   });
 
   it('runs support tickets with private staff notes', async () => {

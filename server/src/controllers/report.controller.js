@@ -4,6 +4,7 @@ import {
   User, Membership, Payment, Attendance, Booking, AuditLog, ContactInquiry, SupportTicket,
 } from '../models/index.js';
 import { ok } from '../utils/apiResponse.js';
+import { oid } from '../utils/pagination.js';
 import { gymDay, gymLocalToUtc, addDays } from '../utils/dates.js';
 import { objectId } from '../validators/common.js';
 
@@ -71,7 +72,7 @@ export async function revenue(req, res) {
   const end = gymDay().slice(0, 7);
   const start = shiftMonth(end, -(req.query.months - 1));
   const match = { status: { $in: ['paid', 'refunded'] }, paidAt: { $gte: monthStart(start) } };
-  if (req.query.plan) match.plan = req.query.plan;
+  if (req.query.plan) match.plan = oid(req.query.plan);
   const monthExpr = { $dateToString: { format: '%Y-%m', date: '$paidAt', timezone: tz() } };
   const [byMonth, byPlan] = await Promise.all([
     Payment.aggregate([{ $match: match }, { $group: {
@@ -120,7 +121,7 @@ export const dailyQuery = z.object({ from: z.string().regex(/^\d{4}-\d{2}-\d{2}$
 
 export async function revenueDaily(req, res) {
   const match = { status: 'paid', paidAt: { $gte: gymLocalToUtc(req.query.from, '00:00'), $lt: gymLocalToUtc(gymDay(addDays(new Date(`${req.query.to}T12:00:00Z`), 1)), '00:00') } };
-  if (req.query.plan) match.plan = req.query.plan;
+  if (req.query.plan) match.plan = oid(req.query.plan);
   const rows = await Payment.aggregate([{ $match: match }, { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$paidAt', timezone: tz() } }, total: { $sum: '$amountPaise' }, count: { $sum: 1 } } }, { $sort: { _id: 1 } }]);
   return ok(res, rows.map((r) => ({ day: r._id, totalPaise: r.total, payments: r.count })));
 }
