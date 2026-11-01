@@ -182,7 +182,7 @@ export function ImageField({ label = "Image URL", value, onChange }: { label?: s
       <div className="flex gap-3">
         <div className="relative size-[74px] shrink-0 overflow-hidden rounded-xl bg-[#f5f5f7] ring-1 ring-inset ring-black/[0.06]">
           {value && !broken ? (
-            // eslint-disable-next-line @next/next/no-img-element
+             
             <img src={value} alt="" className="h-full w-full object-cover" onError={() => setBroken(true)} />
           ) : (
             <ImageIcon className="absolute left-1/2 top-1/2 size-5 -translate-x-1/2 -translate-y-1/2 text-black/25" />
@@ -326,7 +326,7 @@ function ListRow<T>({ item, open, onToggle, title, thumb, onRemove, children }: 
           <GripVertical className="size-4" />
         </button>
         {thumb && (
-          // eslint-disable-next-line @next/next/no-img-element
+           
           <img src={thumb} alt="" className="size-9 rounded-lg object-cover" />
         )}
         <button type="button" onClick={onToggle} className="flex min-w-0 flex-1 items-center justify-between gap-2 py-1 text-left">

@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MONOLITH — Gym website + Admin (CRM & CMS)
 
-## Getting Started
+A demo-ready gym website built with **Next.js 16**, **Tailwind CSS v4**, **Motion** and **Lenis**.
+Mobile-first, animation-heavy, and fully controlled from a built-in admin panel.
 
-First, run the development server:
+## Run it
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Website → http://localhost:3000
+- Admin → http://localhost:3000/admin (`admin@monolith.club` / `monolith123`)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Copy `.env.example` to `.env.local` and set your own admin password and secret before deploying.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## What's inside
 
-## Learn More
+**Website**
+- Intro animation — 3 styles (Counter, Word flash, Monolith), set from the admin
+- "Island" navbar — a single black capsule: bottom of the screen on phones (thumb zone), floating top on desktop, with a scroll-progress ring, live section name, and a menu that morphs open
+- Hero that opens from a rounded window to full-bleed, masked headline reveal, live "Open now" badge
+- **Load the bar** — house rules told as a barbell: scroll loads plates, weight counter climbs 20 → 160 kg
+- Pinned horizontal-scroll programs, an Apple-style full-screen image reveal, coaches, day-tab schedule,
+  pricing with monthly/yearly toggle, BMI calculator, testimonial marquees, bento gallery with lightbox, FAQ
+- Free-trial form → goes straight into the CRM
+- Custom cursor, smooth scroll, magnetic buttons, WhatsApp button
 
-To learn more about Next.js, take a look at the following resources:
+**Admin (`/admin`)**
+- Dashboard — leads trend, pipeline, revenue from active plans, win rate, renewals due (with WhatsApp reminder)
+- Leads CRM — drag-and-drop kanban + list view, lead drawer (call/WhatsApp/email, stages, notes timeline, convert to member)
+- Members — status filters, check-in, one-click renew, add/edit
+- Website CMS — brand name, accent colour, dark/light theme, intro animation, section order & visibility (drag),
+  every text/image/list on the site, contact, hours, SEO; live preview and one-click publish
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Data
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Content, leads and members are stored in `data/db.json` (created automatically from the demo seed).
+That's fine for a single gym on a VPS. On serverless hosts (e.g. Vercel) the filesystem is read-only,
+so swap `src/lib/db.ts` for Postgres / Supabase — every read and write goes through that one file.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Images are Unsplash URLs; replace them from the CMS with the gym's own photos.

@@ -68,10 +68,8 @@ export default function LoadTheBar() {
   const isClosing = step >= n && n > 0;
 
   // cumulative x positions for each plate (outward from the collars)
-  let acc = 0;
-  const layout = PLATES.slice(0, n).map((p) => {
-    const offset = acc;
-    acc += p.w + GAP;
+  const layout = PLATES.slice(0, n).map((p, i) => {
+    const offset = PLATES.slice(0, i).reduce((a, q) => a + q.w + GAP, 0);
     return { ...p, left: COLLAR_L - GAP - offset - p.w, right: COLLAR_R + 16 + GAP + offset };
   });
 
