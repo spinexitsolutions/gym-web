@@ -73,8 +73,8 @@ export default function LeadsBoard({ initial, plans, goals }: { initial: Lead[];
       </PageHeader>
 
       <div className="relative mb-5 max-w-md">
-        <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-black/35" />
-        <input className={`${inputCls} !bg-white pl-10`} placeholder="Search name, phone, goal, source…" value={q} onChange={(e) => setQ(e.target.value)} />
+        <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-white/35" />
+        <input className={`${inputCls} !bg-[#121212] pl-10`} placeholder="Search name, phone, goal, source…" value={q} onChange={(e) => setQ(e.target.value)} />
       </div>
 
       {view === "board" ? (
@@ -101,15 +101,15 @@ export default function LeadsBoard({ initial, plans, goals }: { initial: Lead[];
                   setDragId(null);
                   setOver(null);
                 }}
-                className={`flex w-[78vw] max-w-[300px] shrink-0 snap-start flex-col rounded-[20px] p-2 transition-colors xl:w-auto xl:max-w-none ${over === st.id ? "bg-[#0a84ff]/10 ring-2 ring-[#0a84ff]/40" : "bg-black/[0.035]"}`}
+                className={`flex w-[78vw] max-w-[300px] shrink-0 snap-start flex-col rounded-none p-2 transition-colors xl:w-auto xl:max-w-none ${over === st.id ? "bg-accent/10 ring-2 ring-accent/40" : "bg-white/[0.035]"}`}
               >
                 <div className="flex items-center justify-between px-2 pb-3 pt-2">
-                  <span className="flex items-center gap-2 text-[13.5px] font-semibold">
-                    <span className="size-2 rounded-full" style={{ background: st.tone }} />
+                  <span className="flex items-center gap-2 font-mono text-[14px] uppercase tracking-[0.06em]">
+                    <span className="size-2 rounded-none" style={{ background: st.tone }} />
                     {st.label}
-                    <span className="rounded-full bg-white px-2 py-0.5 text-[11.5px] font-medium text-black/50">{col.length}</span>
+                    <span className="rounded-none bg-[#121212] px-2 py-0.5 text-[11.5px] font-medium text-white/50">{col.length}</span>
                   </span>
-                  {value > 0 && <span className="text-[11.5px] text-black/40">₹{(value / 1000).toFixed(1)}k</span>}
+                  {value > 0 && <span className="text-[11.5px] text-white/40">₹{(value / 1000).toFixed(1)}k</span>}
                 </div>
                 <div className="flex min-h-[120px] flex-col gap-2">
                   <AnimatePresence initial={false}>
@@ -125,27 +125,27 @@ export default function LeadsBoard({ initial, plans, goals }: { initial: Lead[];
                         onDragStart={() => setDragId(l.id)}
                         onDragEnd={() => setDragId(null)}
                         onClick={() => setOpenId(l.id)}
-                        className="cursor-grab rounded-2xl bg-white p-3.5 text-left shadow-[0_1px_2px_rgba(0,0,0,0.05),0_0_0_1px_rgba(0,0,0,0.04)] transition-shadow hover:shadow-[0_6px_20px_-6px_rgba(0,0,0,0.15),0_0_0_1px_rgba(0,0,0,0.05)] active:cursor-grabbing"
+                        className="cursor-grab rounded-none bg-[#121212] p-3.5 text-left shadow-[0_1px_2px_rgba(255,255,255,0.1),0_0_0_1px_rgba(255,255,255,0.08)] transition-shadow hover:shadow-[0_6px_20px_-6px_rgba(0,0,0,0.15),0_0_0_1px_rgba(255,255,255,0.1)] active:cursor-grabbing"
                       >
                         <div className="flex items-center gap-2.5">
                           <Avatar name={l.name} size={30} />
                           <div className="min-w-0">
-                            <p className="truncate text-[14px] font-semibold tracking-[-0.01em]">{l.name}</p>
-                            <p className="truncate text-[12px] text-black/45">{l.phone}</p>
+                            <p className="truncate font-mono text-[15px] uppercase tracking-[0.02em]">{l.name}</p>
+                            <p className="truncate text-[12px] text-white/45">{l.phone}</p>
                           </div>
                         </div>
                         <div className="mt-3 flex flex-wrap gap-1.5">
-                          {l.goal && <span className="rounded-md bg-black/[0.05] px-2 py-0.5 text-[11.5px]">{l.goal}</span>}
-                          {l.preferredTime && <span className="rounded-md bg-black/[0.05] px-2 py-0.5 text-[11.5px]">{l.preferredTime}</span>}
+                          {l.goal && <span className="rounded-md bg-white/[0.05] px-2 py-0.5 text-[11.5px]">{l.goal}</span>}
+                          {l.preferredTime && <span className="rounded-md bg-white/[0.05] px-2 py-0.5 text-[11.5px]">{l.preferredTime}</span>}
                         </div>
-                        <div className="mt-3 flex items-center justify-between text-[11.5px] text-black/40">
+                        <div className="mt-3 flex items-center justify-between text-[11.5px] text-white/40">
                           <span>{l.source}</span>
                           <span>{timeAgo(l.createdAt)}</span>
                         </div>
                       </motion.button>
                     ))}
                   </AnimatePresence>
-                  {!col.length && <p className="px-2 py-6 text-center text-[12.5px] text-black/30">Drop leads here</p>}
+                  {!col.length && <p className="px-2 py-6 text-center text-[12.5px] text-white/30">Drop leads here</p>}
                 </div>
               </div>
             );
@@ -153,7 +153,7 @@ export default function LeadsBoard({ initial, plans, goals }: { initial: Lead[];
         </div>
       ) : (
         <Card className="!p-0 overflow-hidden">
-          <div className="hidden grid-cols-[1.6fr_1fr_1fr_1fr_0.8fr] gap-4 border-b border-black/[0.06] px-5 py-3 text-[12px] font-medium text-black/45 md:grid">
+          <div className="hidden grid-cols-[1.6fr_1fr_1fr_1fr_0.8fr] gap-4 border-b border-white/10 px-5 py-3 font-mono text-[12px] uppercase tracking-[0.08em] text-white/45 md:grid">
             <span>Name</span>
             <span>Goal</span>
             <span>Stage</span>
@@ -163,24 +163,24 @@ export default function LeadsBoard({ initial, plans, goals }: { initial: Lead[];
           {filtered.map((l) => {
             const st = stageOf(l.stage);
             return (
-              <button key={l.id} onClick={() => setOpenId(l.id)} className="grid w-full grid-cols-[1fr_auto] items-center gap-3 border-b border-black/[0.04] px-5 py-3.5 text-left last:border-0 hover:bg-black/[0.02] md:grid-cols-[1.6fr_1fr_1fr_1fr_0.8fr] md:gap-4">
+              <button key={l.id} onClick={() => setOpenId(l.id)} className="grid w-full grid-cols-[1fr_auto] items-center gap-3 border-b border-white/[0.04] px-5 py-3.5 text-left last:border-0 hover:bg-white/[0.02] md:grid-cols-[1.6fr_1fr_1fr_1fr_0.8fr] md:gap-4">
                 <span className="flex min-w-0 items-center gap-3">
                   <Avatar name={l.name} size={32} />
                   <span className="min-w-0">
                     <span className="block truncate text-[14.5px] font-medium">{l.name}</span>
-                    <span className="block truncate text-[12.5px] text-black/45">{l.phone}</span>
+                    <span className="block truncate text-[12.5px] text-white/45">{l.phone}</span>
                   </span>
                 </span>
                 <span className="hidden text-[14px] md:block">{l.goal || "—"}</span>
                 <span>
                   <Badge tone={st.tone}>{st.label}</Badge>
                 </span>
-                <span className="hidden text-[14px] text-black/60 md:block">{l.source}</span>
-                <span className="hidden text-right text-[13px] text-black/45 md:block">{timeAgo(l.createdAt)}</span>
+                <span className="hidden text-[14px] text-white/60 md:block">{l.source}</span>
+                <span className="hidden text-right text-[13px] text-white/45 md:block">{timeAgo(l.createdAt)}</span>
               </button>
             );
           })}
-          {!filtered.length && <p className="p-8 text-center text-black/40">No leads match.</p>}
+          {!filtered.length && <p className="p-8 text-center text-white/40">No leads match.</p>}
         </Card>
       )}
 
@@ -249,33 +249,33 @@ function LeadDrawer({
           <div className="flex items-center gap-4">
             <Avatar name={lead.name} size={56} />
             <div>
-              <h2 className="text-[22px] font-semibold tracking-[-0.03em]">{lead.name}</h2>
-              <p className="text-[13px] text-black/45">
+              <h2 className="display text-[36px]">{lead.name}</h2>
+              <p className="text-[13px] text-white/45">
                 {lead.source} · created {timeAgo(lead.createdAt)}
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-3 gap-2">
-            <a href={`tel:${lead.phone}`} className="flex flex-col items-center gap-1 rounded-2xl bg-[#0a84ff]/10 py-3 text-[12.5px] font-medium text-[#0a84ff]">
+            <a href={`tel:${lead.phone}`} className="flex flex-col items-center gap-1 rounded-none bg-accent/10 py-3 text-[12.5px] font-medium text-accent">
               <Phone className="size-5" /> Call
             </a>
-            <a href={`https://wa.me/${digits}?text=${encodeURIComponent(`Hi ${lead.name.split(" ")[0]}! Thanks for booking a free trial.`)}`} target="_blank" rel="noreferrer" className="flex flex-col items-center gap-1 rounded-2xl bg-[#34c759]/10 py-3 text-[12.5px] font-medium text-[#248a3d]">
+            <a href={`https://wa.me/${digits}?text=${encodeURIComponent(`Hi ${lead.name.split(" ")[0]}! Thanks for booking a free trial.`)}`} target="_blank" rel="noreferrer" className="flex flex-col items-center gap-1 rounded-none bg-[#34c759]/10 py-3 text-[12.5px] font-medium text-[#248a3d]">
               <MessageCircle className="size-5" /> WhatsApp
             </a>
-            <a href={lead.email ? `mailto:${lead.email}` : undefined} className={`flex flex-col items-center gap-1 rounded-2xl bg-black/[0.05] py-3 text-[12.5px] font-medium ${lead.email ? "" : "opacity-40"}`}>
+            <a href={lead.email ? `mailto:${lead.email}` : undefined} className={`flex flex-col items-center gap-1 rounded-none bg-white/[0.05] py-3 text-[12.5px] font-medium ${lead.email ? "" : "opacity-40"}`}>
               <Mail className="size-5" /> Email
             </a>
           </div>
 
           <div>
-            <p className="mb-2 text-[12.5px] font-medium text-black/50">Stage</p>
+            <p className="mb-2 text-[12.5px] font-medium text-white/50">Stage</p>
             <div className="flex flex-wrap gap-1.5">
               {LEAD_STAGES.map((s) => (
                 <button
                   key={s.id}
                   onClick={() => onPatch({ stage: s.id, note: `Moved to ${s.label}` })}
-                  className="h-9 rounded-full px-3.5 text-[13px] font-medium transition"
+                  className="h-9 rounded-none px-3.5 text-[13px] font-medium transition"
                   style={lead.stage === s.id ? { background: s.tone, color: "#fff" } : { background: `${s.tone}14`, color: s.tone }}
                 >
                   {s.label}
@@ -284,14 +284,14 @@ function LeadDrawer({
             </div>
           </div>
 
-          <dl className="grid grid-cols-2 gap-x-4 gap-y-4 rounded-2xl bg-[#f5f5f7] p-4 text-[14px]">
+          <dl className="grid grid-cols-2 gap-x-4 gap-y-4 rounded-none bg-[#0a0a0a] p-4 text-[14px]">
             <Info k="Phone" v={lead.phone} />
             <Info k="Email" v={lead.email || "—"} />
             <Info k="Goal" v={lead.goal || "—"} />
             <Info k="Preferred time" v={lead.preferredTime || "—"} />
             {lead.message && (
               <div className="col-span-2">
-                <dt className="text-[12px] text-black/45">Message</dt>
+                <dt className="text-[12px] text-white/45">Message</dt>
                 <dd className="mt-0.5">{lead.message}</dd>
               </div>
             )}
@@ -299,9 +299,9 @@ function LeadDrawer({
 
           <NumberField label="Deal value (₹ / month)" value={lead.value} onChange={(v) => onPatch({ value: v })} />
 
-          <div className="rounded-2xl border border-black/[0.06] p-4">
+          <div className="rounded-none border border-white/[0.06] p-4">
             <p className="text-[14px] font-semibold">Convert to member</p>
-            <p className="mt-0.5 text-[12.5px] text-black/45">Creates a member with a 1-month plan and marks this lead as won.</p>
+            <p className="mt-0.5 text-[12.5px] text-white/45">Creates a member with a 1-month plan and marks this lead as won.</p>
             <div className="mt-3 flex gap-2">
               <div className="flex-1">
                 <SelectField value={plan} onChange={setPlan} options={plans.map((p) => ({ value: p, label: p }))} />
@@ -313,7 +313,7 @@ function LeadDrawer({
           </div>
 
           <div>
-            <p className="mb-2 text-[12.5px] font-medium text-black/50">Activity</p>
+            <p className="mb-2 text-[12.5px] font-medium text-white/50">Activity</p>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -326,18 +326,18 @@ function LeadDrawer({
               <input className={inputCls} placeholder="Add a note — e.g. called, booked Tue 7pm" value={note} onChange={(e) => setNote(e.target.value)} />
               <Button type="submit" variant="secondary">Add</Button>
             </form>
-            <ol className="mt-4 space-y-3 border-l-2 border-black/[0.06] pl-4">
+            <ol className="mt-4 space-y-3 border-l-2 border-white/[0.06] pl-4">
               {lead.notes.map((n) => (
                 <li key={n.id} className="relative">
-                  <span className="absolute -left-[21px] top-1.5 size-2 rounded-full bg-[#0a84ff]" />
+                  <span className="absolute -left-[21px] top-1.5 size-2 rounded-none bg-accent" />
                   <p className="text-[14px]">{n.text}</p>
-                  <p className="text-[12px] text-black/40">{timeAgo(n.at)}</p>
+                  <p className="text-[12px] text-white/40">{timeAgo(n.at)}</p>
                 </li>
               ))}
               <li className="relative">
-                <span className="absolute -left-[21px] top-1.5 size-2 rounded-full bg-black/20" />
-                <p className="text-[14px] text-black/60">Lead created via {lead.source}</p>
-                <p className="text-[12px] text-black/40">{timeAgo(lead.createdAt)}</p>
+                <span className="absolute -left-[21px] top-1.5 size-2 rounded-none bg-black/20" />
+                <p className="text-[14px] text-white/60">Lead created via {lead.source}</p>
+                <p className="text-[12px] text-white/40">{timeAgo(lead.createdAt)}</p>
               </li>
             </ol>
           </div>
@@ -354,7 +354,7 @@ function LeadDrawer({
 function Info({ k, v }: { k: string; v: string }) {
   return (
     <div className="min-w-0">
-      <dt className="text-[12px] text-black/45">{k}</dt>
+      <dt className="text-[12px] text-white/45">{k}</dt>
       <dd className="mt-0.5 truncate font-medium">{v}</dd>
     </div>
   );

@@ -119,7 +119,7 @@ export default function ContentEditor({ initial }: { initial: SiteContent }) {
         <Button variant="secondary" onClick={() => setPreview((p) => !p)} className="hidden xl:inline-flex">
           {preview ? <EyeOff className="size-4" /> : <Eye className="size-4" />} {preview ? "Hide preview" : "Live preview"}
         </Button>
-        <a href="/" target="_blank" className="inline-flex h-10 items-center gap-2 rounded-full bg-black/[0.05] px-4 text-[14px] font-medium hover:bg-black/[0.08]">
+        <a href="/" target="_blank" className="inline-flex h-10 items-center gap-2 rounded-none bg-white/[0.05] px-4 text-[14px] font-medium hover:bg-white/[0.08]">
           <ExternalLink className="size-4" /> Open site
         </a>
       </PageHeader>
@@ -129,17 +129,17 @@ export default function ContentEditor({ initial }: { initial: SiteContent }) {
         <nav className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4 lg:mx-0 lg:flex-col lg:gap-0.5 lg:overflow-visible lg:px-0">
           {groups.map((g) => (
             <div key={g} className="contents lg:block">
-              <p className="hidden px-3 pb-1.5 pt-4 text-[11.5px] font-semibold uppercase tracking-wider text-black/35 first:pt-0 lg:block">{g}</p>
+              <p className="hidden px-3 pb-1.5 pt-4 text-[11.5px] font-semibold uppercase tracking-wider text-white/35 first:pt-0 lg:block">{g}</p>
               {TABS.filter((t) => t.group === g).map((t) => {
                 const on = tab === t.id;
                 return (
                   <button
                     key={t.id}
                     onClick={() => setTab(t.id)}
-                    className={`relative flex h-9 shrink-0 items-center gap-2.5 rounded-full px-3.5 text-[13.5px] font-medium lg:w-full lg:rounded-[10px] ${on ? "text-[#1d1d1f]" : "text-black/55 hover:text-black"}`}
+                    className={`relative flex h-9 shrink-0 items-center gap-2.5 rounded-none px-3.5 text-[13.5px] font-medium lg:w-full lg:rounded-none ${on ? "text-[#ecebe4]" : "text-white/55 hover:text-white"}`}
                   >
-                    {on && <motion.span layoutId="cms-tab" className="absolute inset-0 rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.04)] lg:rounded-[10px]" transition={{ type: "spring", stiffness: 500, damping: 40 }} />}
-                    <t.icon className={`relative size-4 ${on ? "text-[#0a84ff]" : ""}`} />
+                    {on && <motion.span layoutId="cms-tab" className="absolute inset-0 rounded-none bg-[#121212] shadow-[0_1px_3px_rgba(255,255,255,0.1),0_0_0_1px_rgba(255,255,255,0.08)] lg:rounded-none" transition={{ type: "spring", stiffness: 500, damping: 40 }} />}
+                    <t.icon className={`relative size-4 ${on ? "text-accent" : ""}`} />
                     <span className="relative whitespace-nowrap">{t.label}</span>
                   </button>
                 );
@@ -147,7 +147,7 @@ export default function ContentEditor({ initial }: { initial: SiteContent }) {
             </div>
           ))}
           <div className="hidden pt-6 lg:block">
-            <button onClick={reset} className="flex h-9 w-full items-center gap-2.5 rounded-[10px] px-3.5 text-[13px] font-medium text-[#ff3b30] hover:bg-[#ff3b30]/5">
+            <button onClick={reset} className="flex h-9 w-full items-center gap-2.5 rounded-none px-3.5 text-[13px] font-medium text-[#ff3b30] hover:bg-[#ff3b30]/5">
               <RotateCcw className="size-4" /> Reset to demo content
             </button>
           </div>
@@ -169,8 +169,8 @@ export default function ContentEditor({ initial }: { initial: SiteContent }) {
                 <Label>Preview (after publish)</Label>
                 <Segmented layoutId="device" value={device} onChange={setDevice} options={[{ value: "mobile", label: <Smartphone className="size-4" /> }, { value: "desktop", label: <Monitor className="size-4" /> }]} />
               </div>
-              <div className="overflow-hidden rounded-[28px] bg-black p-2 shadow-xl">
-                <div className="relative h-[720px] overflow-hidden rounded-[22px] bg-white">
+              <div className="overflow-hidden rounded-none bg-black p-2 shadow-xl">
+                <div className="relative h-[720px] overflow-hidden rounded-none bg-[#121212]">
                   <iframe
                     ref={frame}
                     src="/"
@@ -193,16 +193,16 @@ export default function ContentEditor({ initial }: { initial: SiteContent }) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: "spring", stiffness: 400, damping: 34 }}
-            className="fixed inset-x-3 bottom-[84px] z-50 mx-auto flex max-w-[560px] items-center justify-between gap-3 rounded-full bg-[#1d1d1f] py-2 pl-5 pr-2 text-white shadow-2xl lg:bottom-6 lg:left-[248px]"
+            className="fixed inset-x-3 bottom-[84px] z-50 mx-auto flex max-w-[560px] items-center justify-between gap-3 border border-white/15 bg-[#ecebe4] py-2 pl-5 pr-2 text-[#0b0b0b] shadow-2xl lg:bottom-6 lg:left-[260px]"
           >
             <span className="flex items-center gap-2 text-[14px]">
-              <span className="size-2 rounded-full bg-[#ff9f0a]" /> Unsaved changes
+              <span className="tape-thin h-3 w-6" /> <span className="font-mono uppercase">Unsaved changes</span>
             </span>
             <span className="flex gap-2">
-              <button onClick={() => setC(saved)} className="h-10 rounded-full px-4 text-[14px] text-white/70 hover:text-white">
+              <button onClick={() => setC(saved)} className="h-10 px-4 font-mono text-[14px] uppercase text-white/60 hover:text-white">
                 Discard
               </button>
-              <button onClick={save} disabled={saving} className="h-10 rounded-full bg-[#0a84ff] px-5 text-[14px] font-medium disabled:opacity-60">
+              <button onClick={save} disabled={saving} className="cut-sm h-10 bg-[#0b0b0b] px-5 font-mono text-[14px] uppercase text-accent disabled:opacity-60">
                 {saving ? "Publishing…" : "Publish"}
               </button>
             </span>
@@ -242,14 +242,14 @@ function Panel({ tab, c, up }: { tab: Tab; c: SiteContent; up: Up }) {
                     <button
                       key={t}
                       onClick={() => up("brand", { theme: t })}
-                      className={`overflow-hidden rounded-2xl text-left ring-2 transition ${c.brand.theme === t ? "ring-[#0a84ff]" : "ring-transparent"}`}
+                      className={`overflow-hidden rounded-none text-left ring-2 transition ${c.brand.theme === t ? "ring-accent" : "ring-transparent"}`}
                     >
                       <div className={`flex h-24 flex-col justify-end p-3 ${t === "dark" ? "bg-[#0b0b0b] text-[#ecebe4]" : "bg-[#e9e7e1] text-[#0b0b0b]"}`}>
                         <span className="text-[22px] font-semibold leading-none tracking-[-0.04em]">
                           Aa <span className="hl" style={{ color: c.brand.accent }}>Aa</span>
                         </span>
                       </div>
-                      <p className="bg-[#f5f5f7] px-3 py-2 text-[13px] font-medium capitalize">{t === "dark" ? "Rubber floor (dark)" : "Chalk wall (light)"}</p>
+                      <p className="bg-[#0a0a0a] px-3 py-2 text-[13px] font-medium capitalize">{t === "dark" ? "Rubber floor (dark)" : "Chalk wall (light)"}</p>
                     </button>
                   ))}
                 </div>
@@ -284,11 +284,11 @@ function Panel({ tab, c, up }: { tab: Tab; c: SiteContent; up: Up }) {
           <Card title="Intro animation" desc="Plays when a visitor opens the site." action={<Toggle checked={c.intro.enabled} onChange={(v) => up("intro", { enabled: v })} />}>
             <div className={`grid gap-3 sm:grid-cols-3 ${c.intro.enabled ? "" : "pointer-events-none opacity-40"}`}>
               {styles.map((s) => (
-                <button key={s.id} onClick={() => up("intro", { style: s.id })} className={`overflow-hidden rounded-2xl text-left ring-2 transition ${c.intro.style === s.id ? "ring-[#0a84ff]" : "ring-black/[0.06]"}`}>
+                <button key={s.id} onClick={() => up("intro", { style: s.id })} className={`overflow-hidden rounded-none text-left ring-2 transition ${c.intro.style === s.id ? "ring-accent" : "ring-white/[0.06]"}`}>
                   <IntroThumb style={s.id} accent={c.brand.accent} name={c.brand.name} word={c.intro.words.at(-1) ?? ""} />
                   <div className="p-3">
                     <p className="text-[14px] font-semibold">{s.name}</p>
-                    <p className="mt-0.5 text-[12px] text-black/50">{s.desc}</p>
+                    <p className="mt-0.5 text-[12px] text-white/50">{s.desc}</p>
                   </div>
                 </button>
               ))}
@@ -298,7 +298,7 @@ function Panel({ tab, c, up }: { tab: Tab; c: SiteContent; up: Up }) {
             <div className="space-y-5">
               <div>
                 <Label hint={`${(c.intro.durationMs / 1000).toFixed(1)}s`}>Duration</Label>
-                <input type="range" min={1200} max={6000} step={100} value={c.intro.durationMs} onChange={(e) => up("intro", { durationMs: Number(e.target.value) })} className="w-full accent-[#0a84ff]" />
+                <input type="range" min={1200} max={6000} step={100} value={c.intro.durationMs} onChange={(e) => up("intro", { durationMs: Number(e.target.value) })} className="w-full accent-accent" />
               </div>
               <ChipsField label="Words (used by Word flash & Counter caption)" value={c.intro.words} onChange={(v) => up("intro", { words: v })} />
               <Toggle label="Play once per visit" desc="Skip the intro when the visitor navigates back in the same session." checked={c.intro.oncePerSession} onChange={(v) => up("intro", { oncePerSession: v })} />
@@ -313,11 +313,11 @@ function Panel({ tab, c, up }: { tab: Tab; c: SiteContent; up: Up }) {
         <Card title="Homepage sections" desc="Drag to reorder. Toggle to show or hide. Hero & footer are always on.">
           <Reorder.Group axis="y" values={c.sections} onReorder={(v) => up("sections", v)} className="flex flex-col gap-2">
             {c.sections.map((s) => (
-              <Reorder.Item key={s.id} value={s} className="flex cursor-grab items-center gap-3 rounded-2xl bg-[#f5f5f7] p-2 pr-3 ring-1 ring-inset ring-black/[0.05] active:cursor-grabbing">
-                <span className="grid size-8 place-items-center text-black/30">
+              <Reorder.Item key={s.id} value={s} className="flex cursor-grab items-center gap-3 rounded-none bg-[#0a0a0a] p-2 pr-3 ring-1 ring-inset ring-white/[0.05] active:cursor-grabbing">
+                <span className="grid size-8 place-items-center text-white/30">
                   <GripVertical className="size-4" />
                 </span>
-                <span className={`flex-1 text-[14.5px] font-medium ${s.enabled ? "" : "text-black/35"}`}>{s.label}</span>
+                <span className={`flex-1 text-[14.5px] font-medium ${s.enabled ? "" : "text-white/35"}`}>{s.label}</span>
                 <Toggle checked={s.enabled} onChange={(v) => up("sections", c.sections.map((x) => (x.id === s.id ? { ...x, enabled: v } : x)))} />
               </Reorder.Item>
             ))}
@@ -611,7 +611,7 @@ function Panel({ tab, c, up }: { tab: Tab; c: SiteContent; up: Up }) {
           <div className="space-y-4">
             <TextField label="Page title" hint={`${c.seo.title.length}/60`} value={c.seo.title} onChange={(v) => up("seo", { title: v })} />
             <TextField label="Meta description" hint={`${c.seo.description.length}/160`} textarea value={c.seo.description} onChange={(v) => up("seo", { description: v })} />
-            <div className="rounded-2xl bg-[#f5f5f7] p-4">
+            <div className="bg-[#121212] p-4">
               <p className="text-[12px] text-black/45">Google preview</p>
               <p className="mt-2 text-[18px] text-[#1a0dab]">{c.seo.title}</p>
               <p className="text-[13px] text-[#006621]">yourgym.com</p>
@@ -636,7 +636,7 @@ function IntroThumb({ style, accent, name, word }: { style: IntroStyle; accent: 
       {style === "words" && <span className="font-serif text-[30px] italic" style={{ color: accent }}>{word}</span>}
       {style === "minimal" && (
         <div className="flex flex-col items-center gap-2">
-          <span className="relative h-10 w-7 overflow-hidden rounded-[3px] border-2 border-white/80">
+          <span className="relative h-10 w-7 overflow-hidden rounded-none border-2 border-white/80">
             <span className="absolute inset-x-0 bottom-0 h-3/5" style={{ background: accent }} />
           </span>
           <span className="text-[11px] font-semibold tracking-tight">{name}</span>

@@ -70,13 +70,13 @@ export default function MembersTable({ initial, plans, trainers }: { initial: Me
           ]}
         />
         <div className="relative w-full max-w-sm">
-          <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-black/35" />
-          <input className={`${inputCls} !bg-white pl-10`} placeholder="Search members…" value={q} onChange={(e) => setQ(e.target.value)} />
+          <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-white/35" />
+          <input className={`${inputCls} !bg-[#121212] pl-10`} placeholder="Search members…" value={q} onChange={(e) => setQ(e.target.value)} />
         </div>
       </div>
 
       <Card className="!p-0 overflow-hidden">
-        <div className="hidden grid-cols-[1.6fr_1fr_0.9fr_1fr_0.7fr_auto] gap-4 border-b border-black/[0.06] px-5 py-3 text-[12px] font-medium text-black/45 lg:grid">
+        <div className="hidden grid-cols-[1.6fr_1fr_0.9fr_1fr_0.7fr_auto] gap-4 border-b border-white/10 px-5 py-3 font-mono text-[12px] uppercase tracking-[0.08em] text-white/45 lg:grid">
           <span>Member</span>
           <span>Plan</span>
           <span>Status</span>
@@ -87,12 +87,12 @@ export default function MembersTable({ initial, plans, trainers }: { initial: Me
         {list.map((m) => {
           const d = daysLeft(m.expiresAt);
           return (
-            <div key={m.id} className="grid grid-cols-[1fr_auto] items-center gap-3 border-b border-black/[0.04] px-5 py-3.5 last:border-0 lg:grid-cols-[1.6fr_1fr_0.9fr_1fr_0.7fr_auto] lg:gap-4">
+            <div key={m.id} className="grid grid-cols-[1fr_auto] items-center gap-3 border-b border-white/[0.04] px-5 py-3.5 last:border-0 lg:grid-cols-[1.6fr_1fr_0.9fr_1fr_0.7fr_auto] lg:gap-4">
               <div className="flex min-w-0 items-center gap-3">
                 <Avatar name={m.name} />
                 <div className="min-w-0">
                   <p className="truncate text-[14.5px] font-medium">{m.name}</p>
-                  <p className="truncate text-[12.5px] text-black/45">
+                  <p className="truncate text-[12.5px] text-white/45">
                     {m.phone}
                     <span className="lg:hidden"> · {m.plan}</span>
                   </p>
@@ -100,14 +100,14 @@ export default function MembersTable({ initial, plans, trainers }: { initial: Me
               </div>
               <span className="hidden text-[14px] lg:block">
                 {m.plan}
-                <span className="block text-[12px] text-black/40">Coach: {m.trainer}</span>
+                <span className="block text-[12px] text-white/40">Coach: {m.trainer}</span>
               </span>
               <span>
                 <Badge tone={STATUS[m.status].tone}>{STATUS[m.status].label}</Badge>
               </span>
               <span className="hidden text-[14px] lg:block">
                 {new Date(m.expiresAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
-                <span className={`block text-[12px] ${d < 0 ? "text-[#ff3b30]" : d <= 7 ? "text-[#ff9f0a]" : "text-black/40"}`}>
+                <span className={`block text-[12px] ${d < 0 ? "text-[#ff3b30]" : d <= 7 ? "text-[#ff9f0a]" : "text-white/40"}`}>
                   {d < 0 ? `${-d} days overdue` : `${d} days left`}
                 </span>
               </span>
@@ -126,7 +126,7 @@ export default function MembersTable({ initial, plans, trainers }: { initial: Me
             </div>
           );
         })}
-        {!list.length && <p className="p-10 text-center text-black/40">No members here yet.</p>}
+        {!list.length && <p className="p-10 text-center text-white/40">No members here yet.</p>}
       </Card>
 
       <MemberForm
