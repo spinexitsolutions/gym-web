@@ -86,13 +86,13 @@ export default function LoadTheBar() {
         <div className="container-x flex items-end justify-between gap-6">
           <div>
             <p className="eyebrow mb-4 flex items-center gap-3">
-              <span className="h-px w-8 bg-accent" />
+              <span className="size-2 rounded-[2px] bg-accent" />
               {m.eyebrow}
             </p>
             <h2 className="display text-[clamp(44px,8vw,112px)]">
               {m.title.split(" ").map((w, i, a) =>
                 i === a.length - 1 ? (
-                  <span key={i} className="serif-i text-accent">
+                  <span key={i} className="hl text-accent">
                     {w}
                   </span>
                 ) : (
@@ -171,7 +171,7 @@ export default function LoadTheBar() {
                   className="flex flex-col gap-2 md:flex-row md:items-end md:gap-10"
                 >
                   {isClosing ? (
-                    <h3 className="serif-i text-[clamp(32px,4.6vw,60px)] leading-[0.95] text-accent">{m.closing}</h3>
+                    <h3 className="hl text-[clamp(32px,4.6vw,60px)] leading-[0.95] text-accent">{m.closing}</h3>
                   ) : step === 0 ? (
                     <h3 className="text-[clamp(30px,4.2vw,56px)] font-semibold leading-[0.95] tracking-[-0.045em] text-muted">
                       Empty bar. 20 kg.

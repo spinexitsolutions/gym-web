@@ -2,14 +2,14 @@
 
 /* ───────────────── Design tokens ───────────────── */
 :root {
-  --accent: #ff5b2e;
-  --accent-ink: #0b0b0c;
+  --accent: #2d3bff;
+  --accent-ink: #ffffff;
 
-  /* dark (default) — "iron" */
-  --bg: #0b0b0c;
-  --bg-2: #121214;
-  --card: #161618;
-  --fg: #f2f0eb;
+  /* dark — "graphite" */
+  --bg: #0e0f11;
+  --bg-2: #15171a;
+  --card: #1a1c20;
+  --fg: #eeede8;
   --glass: color-mix(in oklab, #000 62%, transparent);
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -17,25 +17,25 @@
 }
 
 [data-theme="light"] {
-  --bg: #f3f1ec;
-  --bg-2: #eae7e0;
-  --card: #ffffff;
-  --fg: #0e0e10;
+  --bg: #eceae4;
+  --bg-2: #e2dfd8;
+  --card: #f7f6f2;
+  --fg: #121316;
   --glass: color-mix(in oklab, #fff 70%, transparent);
 }
 
 /* Inverted surface — chalk on iron, iron on chalk (Apple-style rhythm) */
 .surface-invert {
-  --bg: #f3f1ec;
-  --bg-2: #e9e6df;
-  --card: #ffffff;
-  --fg: #0e0e10;
+  --bg: #eceae4;
+  --bg-2: #e2dfd8;
+  --card: #f7f6f2;
+  --fg: #121316;
 }
 [data-theme="light"] .surface-invert {
-  --bg: #0b0b0c;
-  --bg-2: #121214;
-  --card: #161618;
-  --fg: #f2f0eb;
+  --bg: #121316;
+  --bg-2: #191b1f;
+  --card: #1d2024;
+  --fg: #eeede8;
 }
 .surface-invert {
   background: var(--bg);
@@ -62,9 +62,9 @@
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
 
-  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
-  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  /* one family everywhere — "mono" is just the condensed cut of Archivo */
+  --font-mono: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* ───────────────── Base ───────────────── */
@@ -86,7 +86,7 @@ html.lenis body {
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-sans);
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;
@@ -97,24 +97,34 @@ body {
   color: var(--accent-ink);
 }
 
-/* ───────────────── Typography helpers ───────────────── */
+/* ───────────────── Typography — one variable sans (Archivo), width is the contrast ───────────────── */
 .display {
-  font-weight: 600;
-  letter-spacing: -0.045em;
-  line-height: 0.9;
+  font-weight: 760;
+  font-stretch: 108%;
+  letter-spacing: -0.035em;
+  line-height: 0.92;
 }
-.serif-i {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -0.02em;
+/* highlighted words: same family, pushed to full width + accent */
+.hl {
+  font-stretch: 125%;
+  font-weight: 800;
+  letter-spacing: -0.04em;
 }
 .eyebrow {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
+  font-size: 12px;
+  font-weight: 650;
+  font-stretch: 72%;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
+}
+.font-mono {
+  font-stretch: 78%;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 
 /* ───────────────── Utilities ───────────────── */

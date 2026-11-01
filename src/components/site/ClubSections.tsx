@@ -52,7 +52,7 @@ export function Trainers() {
               <SocialIcon name="instagram" />
             </a>
             <div className="absolute inset-x-0 bottom-0 p-5">
-              <p className="eyebrow !text-[10px] !text-accent">{t.role}</p>
+              <p className="eyebrow !text-[10px] !text-white/70">{t.role}</p>
               <h3 className="mt-1.5 text-[26px] font-semibold leading-none tracking-[-0.04em]">{t.name}</h3>
               <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-700 ease-[var(--ease-out)] group-hover:grid-rows-[1fr]">
                 <p className="overflow-hidden text-[13.5px] text-white/70">
@@ -300,10 +300,10 @@ export function Bmi() {
       <div className="grid overflow-hidden rounded-[32px] bg-card ring-1 ring-inset ring-line lg:grid-cols-2">
         <div className="p-7 md:p-12">
           <p className="eyebrow mb-5 flex items-center gap-3">
-            <span className="h-px w-8 bg-accent" /> Quick check
+            <span className="size-2 rounded-[2px] bg-accent" /> Quick check
           </p>
           <h2 className="display text-[clamp(40px,5.6vw,80px)]">
-            Know your <span className="serif-i text-accent">number.</span>
+            Know your <span className="hl text-accent">number.</span>
           </h2>
           <p className="mt-5 max-w-sm text-[15px] text-muted">A starting point, not a verdict. Slide to calculate your BMI.</p>
 

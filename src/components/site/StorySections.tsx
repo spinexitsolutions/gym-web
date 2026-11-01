@@ -59,7 +59,7 @@ export function Programs() {
     <div className="flex w-full shrink-0 flex-col justify-between gap-8 lg:w-[34vw] lg:py-4 lg:pr-10">
       <div>
         <p className="eyebrow mb-5 flex items-center gap-3">
-          <span className="h-px w-8 bg-accent" />
+          <span className="size-2 rounded-[2px] bg-accent" />
           Programs
         </p>
         <SplitReveal
@@ -138,7 +138,7 @@ function ProgramCard({ p, i, total }: { p: ReturnType<typeof useSite>["content"]
         </div>
 
         <div>
-          <p className="serif-i mb-1 text-[22px] text-accent">{p.tagline}</p>
+          <p className="mb-1.5 text-[15px] font-semibold uppercase tracking-[0.02em] text-white/75 [font-stretch:115%]">{p.tagline}</p>
           <h3 className="text-[clamp(44px,5vw,64px)] font-semibold leading-[0.9] tracking-[-0.05em]">{p.title}</h3>
 
           <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-700 ease-[var(--ease-out)] group-hover:grid-rows-[1fr] max-lg:grid-rows-[1fr]">

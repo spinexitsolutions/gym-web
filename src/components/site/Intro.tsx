@@ -143,7 +143,7 @@ export default function Intro({
                   <motion.span
                     key={wordIdx}
                     className={`display text-center text-[clamp(64px,20vw,260px)] ${
-                      wordIdx === settings.words.length - 1 ? "serif-i text-accent" : ""
+                      wordIdx === settings.words.length - 1 ? "hl text-accent" : ""
                     }`}
                     initial={{ opacity: 0, scale: 0.86, filter: "blur(12px)" }}
                     animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}

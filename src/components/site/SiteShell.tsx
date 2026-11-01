@@ -109,7 +109,7 @@ export default function SiteShell({ content, children }: { content: SiteContent;
                   {Array.from({ length: 8 }).map((_, i) => (
                     <span key={i} className="flex items-center gap-6 whitespace-nowrap pr-6 text-[13px] font-medium tracking-tight">
                       {content.brand.announcement.text}
-                      <span aria-hidden>✺</span>
+                      <span aria-hidden className="size-1.5 rotate-45 bg-accent-ink/70" />
                     </span>
                   ))}
                 </div>

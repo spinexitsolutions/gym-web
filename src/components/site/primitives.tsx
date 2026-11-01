@@ -17,7 +17,7 @@ export function SplitReveal({
   play,
   as: Tag = "span",
   highlight,
-  highlightClassName = "serif-i text-accent",
+  highlightClassName = "hl text-accent",
 }: {
   text: string;
   className?: string;
@@ -233,7 +233,7 @@ export function SectionHead({
       <div className="max-w-3xl">
         <FadeUp>
           <p className="eyebrow mb-5 flex items-center gap-3">
-            <span className="h-px w-8 bg-accent" />
+            <span className="size-2 rounded-[2px] bg-accent" />
             {eyebrow}
           </p>
         </FadeUp>
