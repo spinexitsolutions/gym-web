@@ -153,8 +153,7 @@ export function PillButton({
 }) {
   const styles = {
     accent: "bg-accent text-accent-ink",
-    glass:
-      "bg-[color-mix(in_oklab,var(--fg)_8%,transparent)] text-fg backdrop-blur-xl ring-1 ring-inset ring-line",
+    glass: "bg-[color-mix(in_oklab,var(--fg)_10%,transparent)] text-fg",
     solid: "bg-fg text-bg",
   }[variant];
   const inner = (
@@ -171,7 +170,7 @@ export function PillButton({
         </span>
       </span>
       <span
-        className={`grid size-8 place-items-center rounded-full transition-transform duration-500 ease-[var(--ease-out)] group-hover:rotate-45 ${
+        className={`grid size-8 place-items-center transition-transform duration-500 ease-[var(--ease-out)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 ${
           variant === "accent" ? "bg-accent-ink text-accent" : "bg-fg text-bg"
         } ${variant === "solid" ? "!bg-bg !text-fg" : ""}`}
       >
@@ -179,7 +178,7 @@ export function PillButton({
       </span>
     </>
   );
-  const cls = `group inline-flex h-12 items-center gap-3 rounded-full pl-6 pr-2 text-[15px] font-medium tracking-tight transition-[transform,opacity] active:scale-[0.97] disabled:opacity-60 ${styles} ${className}`;
+  const cls = `cut-sm group inline-flex h-[52px] items-center gap-3 pl-6 pr-2 font-mono text-[15px] uppercase transition-[transform,opacity] active:scale-[0.97] disabled:opacity-60 ${styles} ${className}`;
   if (href)
     return (
       <a href={href} className={cls} data-cursor="hover" onClick={onClick}>

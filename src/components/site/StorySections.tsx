@@ -116,7 +116,7 @@ function ProgramCard({ p, i, total }: { p: ReturnType<typeof useSite>["content"]
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "0px -5% -10% 0px" }}
       transition={{ duration: 0.9, delay: (i % 3) * 0.08, ease: EASE }}
-      className="group relative h-[68svh] max-h-[620px] min-h-[440px] w-[82vw] max-w-[420px] shrink-0 snap-center overflow-hidden rounded-[28px] bg-card text-[#f2f0eb] lg:h-[72vh] lg:w-[30vw] lg:max-w-[460px]"
+      className="group relative h-[68svh] max-h-[620px] min-h-[440px] w-[82vw] max-w-[420px] shrink-0 snap-center overflow-hidden rounded-[3px] bg-card text-[#f2f0eb] lg:h-[72vh] lg:w-[30vw] lg:max-w-[460px]"
       data-cursor="view"
     >
       <img
@@ -132,14 +132,14 @@ function ProgramCard({ p, i, total }: { p: ReturnType<typeof useSite>["content"]
           <span className="font-mono text-[12px] text-white/60">
             {String(i + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
           </span>
-          <span className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-[12px] backdrop-blur-md">
+          <span className="flex items-center gap-1.5 rounded-[2px] bg-white/10 px-3 py-1.5 text-[12px] backdrop-blur-md">
             <Clock className="size-3.5" /> {p.duration}
           </span>
         </div>
 
         <div>
           <p className="mb-1.5 text-[15px] font-semibold uppercase tracking-[0.02em] text-white/75 [font-stretch:115%]">{p.tagline}</p>
-          <h3 className="text-[clamp(44px,5vw,64px)] font-semibold leading-[0.9] tracking-[-0.05em]">{p.title}</h3>
+          <h3 className="display text-[clamp(52px,6vw,76px)]">{p.title}</h3>
 
           <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-700 ease-[var(--ease-out)] group-hover:grid-rows-[1fr] max-lg:grid-rows-[1fr]">
             <p className="overflow-hidden text-[14.5px] leading-relaxed text-white/70">
@@ -150,7 +150,7 @@ function ProgramCard({ p, i, total }: { p: ReturnType<typeof useSite>["content"]
           <div className="mt-5 flex items-end justify-between gap-4 border-t border-white/15 pt-4">
             <div className="flex flex-wrap gap-1.5">
               {p.tags.map((t) => (
-                <span key={t} className="rounded-full border border-white/20 px-2.5 py-1 text-[11.5px] text-white/80">
+                <span key={t} className="rounded-[2px] border border-white/20 px-2.5 py-1 text-[11.5px] text-white/80">
                   {t}
                 </span>
               ))}
@@ -161,7 +161,7 @@ function ProgramCard({ p, i, total }: { p: ReturnType<typeof useSite>["content"]
                 {[1, 2, 3, 4, 5].map((n) => (
                   <span
                     key={n}
-                    className={`w-[5px] rounded-full ${n <= p.intensity ? "bg-accent" : "bg-white/20"}`}
+                    className={`w-[5px] rounded-[2px] ${n <= p.intensity ? "bg-accent" : "bg-white/20"}`}
                     style={{ height: 6 + n * 3 }}
                   />
                 ))}
@@ -184,7 +184,7 @@ export function Reveal() {
   const clip = useTransform(
     scrollYProgress,
     [0, 0.5],
-    ["inset(22% 14% 22% 14% round 36px)", "inset(0% 0% 0% 0% round 0px)"],
+    ["inset(22% 14% 22% 14% round 2px)", "inset(0% 0% 0% 0% round 0px)"],
   );
   const imgScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.35, 1, 1.08]);
   const headOpacity = useTransform(scrollYProgress, [0, 0.22], [1, 0]);

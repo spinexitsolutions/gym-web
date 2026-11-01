@@ -29,14 +29,14 @@ export function Testimonials() {
               {[...row, ...row].map((t, i) => (
                 <figure
                   key={`${t.id}-${i}`}
-                  className="mr-4 flex w-[84vw] max-w-[440px] shrink-0 flex-col justify-between rounded-[26px] bg-card p-6 ring-1 ring-inset ring-line md:mr-5 md:p-8"
+                  className="mr-4 flex w-[84vw] max-w-[440px] shrink-0 flex-col justify-between rounded-[3px] bg-card p-6 ring-1 ring-inset ring-line md:mr-5 md:p-8"
                 >
                   <div>
-                    <span className="inline-block rounded-full bg-accent px-3 py-1 text-[12px] font-semibold text-accent-ink">{t.result}</span>
+                    <span className="inline-block rounded-[2px] bg-accent px-3 py-1 text-[12px] font-semibold text-accent-ink">{t.result}</span>
                     <blockquote className="mt-5 text-[18px] leading-snug tracking-[-0.015em] md:text-[21px]">“{t.quote}”</blockquote>
                   </div>
                   <figcaption className="mt-8 flex items-center gap-3">
-                    <img src={t.avatar} alt="" loading="lazy" className="size-11 rounded-full object-cover" />
+                    <img src={t.avatar} alt="" loading="lazy" className="size-11 rounded-[2px] object-cover" />
                     <div>
                       <p className="text-[15px] font-semibold tracking-tight">{t.name}</p>
                       <p className="text-[13px] text-muted">{t.role}</p>
@@ -80,9 +80,9 @@ export function Gallery() {
           <motion.button
             key={g.id}
             onClick={() => setOpen(g.id)}
-            className={`group relative overflow-hidden rounded-[22px] bg-card ${SPANS[i % SPANS.length]}`}
-            initial={{ clipPath: "inset(100% 0% 0% 0% round 22px)" }}
-            whileInView={{ clipPath: "inset(0% 0% 0% 0% round 22px)" }}
+            className={`group relative overflow-hidden rounded-[3px] bg-card ${SPANS[i % SPANS.length]}`}
+            initial={{ clipPath: "inset(100% 0% 0% 0% round 2px)" }}
+            whileInView={{ clipPath: "inset(0% 0% 0% 0% round 2px)" }}
             viewport={{ once: true, margin: "0px 0px -10% 0px" }}
             transition={{ duration: 1.2, delay: (i % 4) * 0.08, ease: EASE_IO }}
             data-cursor="view"
@@ -94,7 +94,7 @@ export function Gallery() {
               loading="lazy"
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1.2s] ease-[var(--ease-out)] group-hover:scale-105"
             />
-            <span className="absolute bottom-3 left-3 translate-y-2 rounded-full bg-black/50 px-3 py-1.5 text-[12px] text-white opacity-0 backdrop-blur-md transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+            <span className="absolute bottom-3 left-3 translate-y-2 rounded-[2px] bg-black/50 px-3 py-1.5 text-[12px] text-white opacity-0 backdrop-blur-md transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
               {g.caption}
             </span>
           </motion.button>
@@ -114,10 +114,10 @@ export function Gallery() {
               layoutId={`g-${item.id}`}
               src={item.image}
               alt={item.caption}
-              className="max-h-[82vh] w-auto max-w-full rounded-[22px] object-contain"
+              className="max-h-[82vh] w-auto max-w-full rounded-[3px] object-contain"
             />
             <p className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[14px] text-white/80">{item.caption}</p>
-            <button className="absolute right-5 top-5 grid size-11 place-items-center rounded-full bg-white/10 text-white" aria-label="Close">
+            <button className="absolute right-5 top-5 grid size-11 place-items-center rounded-[2px] bg-white/10 text-white" aria-label="Close">
               <X className="size-5" />
             </button>
           </motion.div>
@@ -154,11 +154,11 @@ export function Faq() {
                     aria-expanded={on}
                     data-cursor="hover"
                   >
-                    <span className="text-[19px] font-medium tracking-[-0.025em] md:text-[24px]">{f.q}</span>
+                    <span className="display text-[26px] md:text-[36px]">{f.q}</span>
                     <motion.span
                       animate={{ rotate: on ? 45 : 0, backgroundColor: on ? "var(--accent)" : "var(--faint)" }}
                       transition={{ duration: 0.4, ease: EASE }}
-                      className={`grid size-10 shrink-0 place-items-center rounded-full ${on ? "text-accent-ink" : ""}`}
+                      className={`grid size-10 shrink-0 place-items-center rounded-[2px] ${on ? "text-accent-ink" : ""}`}
                     >
                       <Plus className="size-4" />
                     </motion.span>
@@ -238,7 +238,7 @@ export function Join() {
 
   return (
     <section ref={ref} id="join" data-nav="join" className="container-x py-24 md:py-36">
-      <div className="grid overflow-hidden rounded-[32px] bg-card ring-1 ring-inset ring-line lg:grid-cols-[1fr_1.1fr]">
+      <div className="grid overflow-hidden rounded-[3px] bg-card ring-1 ring-inset ring-line lg:grid-cols-[1fr_1.1fr]">
         <div className="relative min-h-[300px] overflow-hidden lg:min-h-full">
           <motion.img src={j.image} alt="" loading="lazy" style={{ y: imgY, scale: 1.2 }} className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
@@ -271,7 +271,7 @@ export function Join() {
               <motion.form key="form" onSubmit={submit} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col gap-6">
                 <p className="text-[15px] leading-relaxed text-muted">{j.subtitle}</p>
                 {prefill.plan && (
-                  <p className="flex items-center gap-2 rounded-2xl bg-accent/10 px-4 py-3 text-[14px] text-fg">
+                  <p className="flex items-center gap-2 rounded-[3px] bg-accent/10 px-4 py-3 text-[14px] text-fg">
                     <Check className="size-4 text-accent" /> Selected plan: <b>{prefill.plan}</b>
                   </p>
                 )}
@@ -290,7 +290,7 @@ export function Join() {
                         type="button"
                         key={g}
                         onClick={() => setGoal(goal === g ? "" : g)}
-                        className={`h-10 rounded-full px-4 text-[14px] transition-all duration-300 ${
+                        className={`h-10 rounded-[2px] px-4 text-[14px] transition-all duration-300 ${
                           goal === g ? "bg-fg text-bg" : "ring-1 ring-inset ring-line hover:ring-fg/40"
                         }`}
                         data-cursor="hover"
@@ -303,10 +303,10 @@ export function Join() {
 
                 <div>
                   <p className="mb-3 text-[13px] text-muted">Preferred time</p>
-                  <div className="inline-flex rounded-full bg-[color-mix(in_oklab,var(--fg)_7%,transparent)] p-1">
+                  <div className="inline-flex rounded-[2px] bg-[color-mix(in_oklab,var(--fg)_7%,transparent)] p-1">
                     {TIMES.map((t) => (
-                      <button type="button" key={t} onClick={() => setTime(t)} className="relative h-10 rounded-full px-4 text-[14px]" data-cursor="hover">
-                        {time === t && <motion.span layoutId="time-pill" className="absolute inset-0 rounded-full bg-fg" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
+                      <button type="button" key={t} onClick={() => setTime(t)} className="relative h-10 rounded-[2px] px-4 text-[14px]" data-cursor="hover">
+                        {time === t && <motion.span layoutId="time-pill" className="absolute inset-0 rounded-[2px] bg-fg" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
                         <span className={`relative ${time === t ? "text-bg" : ""}`}>{t}</span>
                       </button>
                     ))}
@@ -345,7 +345,7 @@ function Field({
   autoComplete?: string;
 }) {
   const cls =
-    "peer w-full rounded-2xl bg-transparent px-4 pb-2.5 pt-6 text-[16px] outline-none ring-1 ring-inset ring-line transition-shadow placeholder-transparent focus:ring-2 focus:ring-accent";
+    "peer w-full rounded-[3px] bg-transparent px-4 pb-2.5 pt-6 text-[16px] outline-none ring-1 ring-inset ring-line transition-shadow placeholder-transparent focus:ring-2 focus:ring-accent";
   return (
     <label className="relative block">
       {textarea ? (
@@ -370,7 +370,7 @@ export function Footer() {
   const y = useTransform(scrollYProgress, [0, 1], ["40%", "0%"]);
 
   return (
-    <footer ref={ref} data-nav="footer" className="surface-invert relative overflow-hidden rounded-t-[36px] pb-36 pt-20 md:rounded-t-[56px] md:pb-10 md:pt-28">
+    <footer ref={ref} data-nav="footer" className="surface-invert relative overflow-hidden rounded-none pb-36 pt-20 md:rounded-none md:pb-10 md:pt-28">
       <div className="container-x">
         <div className="flex flex-col items-start justify-between gap-10 md:flex-row md:items-end">
           <SplitReveal as="h2" text="Ready when you are." highlight="you" className="display block max-w-[12ch] text-[clamp(48px,8vw,128px)]" />
@@ -384,7 +384,7 @@ export function Footer() {
                   <textPath href="#circ">Book a free trial • Book a free trial • </textPath>
                 </text>
               </motion.svg>
-              <span className="grid size-16 place-items-center rounded-full bg-accent text-accent-ink transition-transform duration-500 hover:rotate-45 md:size-20">
+              <span className="grid size-16 place-items-center rounded-[2px] bg-accent text-accent-ink transition-transform duration-500 hover:rotate-45 md:size-20">
                 <ArrowUpRight className="size-7" />
               </span>
             </button>
@@ -405,7 +405,7 @@ export function Footer() {
             </p>
             <p className="mt-1 pl-6 text-[15px]">{c.hoursWeekend}</p>
             <p className="mt-3 flex items-center gap-2 pl-6 text-[13px] text-muted">
-              <span className={`live-dot size-1.5 rounded-full ${status?.open ? "bg-[#30d158]" : "bg-[#8e8e93]"}`} /> {status?.label}
+              <span className={`live-dot size-1.5 rounded-[2px] ${status?.open ? "bg-[#30d158]" : "bg-[#8e8e93]"}`} /> {status?.label}
             </p>
           </div>
           <div>
@@ -424,7 +424,7 @@ export function Footer() {
                 const href = s === "whatsapp" ? `https://wa.me/${c.whatsapp}` : c[s];
                 if (!href) return null;
                 return (
-                  <a key={s} href={href} target="_blank" rel="noreferrer" aria-label={s} className="grid size-11 place-items-center rounded-full ring-1 ring-inset ring-line transition-colors hover:bg-fg hover:text-bg" data-cursor="hover">
+                  <a key={s} href={href} target="_blank" rel="noreferrer" aria-label={s} className="grid size-11 place-items-center rounded-[2px] ring-1 ring-inset ring-line transition-colors hover:bg-fg hover:text-bg" data-cursor="hover">
                     <SocialIcon name={s} />
                   </a>
                 );

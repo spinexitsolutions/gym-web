@@ -8,8 +8,8 @@ export const seedContent: SiteContent = {
     name: "MONOLITH",
     shortName: "M",
     tagline: "Athletic Club",
-    accent: "#2D3BFF",
-    theme: "light",
+    accent: "#FFD400",
+    theme: "dark",
     announcement: {
       enabled: true,
       text: "New batch starts Monday — first 7 days free",
@@ -26,9 +26,9 @@ export const seedContent: SiteContent = {
     oncePerSession: false,
   },
   hero: {
-    eyebrow: "Strength & Conditioning · Bandra, Mumbai",
-    lines: ["Stronger", "every rep."],
-    highlight: "rep.",
+    eyebrow: "Strength & Conditioning · Bandra",
+    lines: ["Train like", "it counts."],
+    highlight: "counts.",
     subtitle:
       "A training floor engineered for people who show up. Coaching, programming and community — without the noise.",
     image: u("1605296867304-46d5465a13f1", 2400),

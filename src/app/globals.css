@@ -2,14 +2,16 @@
 
 /* ───────────────── Design tokens ───────────────── */
 :root {
-  --accent: #2d3bff;
-  --accent-ink: #ffffff;
+  --accent: #ffd400;
+  --accent-ink: #0b0b0b;
+  --led: #ff2a1f;
+  --led-go: #2bff7a;
 
-  /* dark — "graphite" */
-  --bg: #0e0f11;
-  --bg-2: #15171a;
-  --card: #1a1c20;
-  --fg: #eeede8;
+  /* dark — "rubber floor" */
+  --bg: #0b0b0b;
+  --bg-2: #141414;
+  --card: #181818;
+  --fg: #ecebe4;
   --glass: color-mix(in oklab, #000 62%, transparent);
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -17,25 +19,26 @@
 }
 
 [data-theme="light"] {
-  --bg: #eceae4;
-  --bg-2: #e2dfd8;
-  --card: #f7f6f2;
-  --fg: #121316;
+  --bg: #e9e7e1;
+  --bg-2: #dedbd3;
+  --card: #f4f3ef;
+  --fg: #0b0b0b;
   --glass: color-mix(in oklab, #fff 70%, transparent);
 }
 
 /* Inverted surface — chalk on iron, iron on chalk (Apple-style rhythm) */
+/* chalk-white surface (like a whiteboard wall) */
 .surface-invert {
-  --bg: #eceae4;
-  --bg-2: #e2dfd8;
-  --card: #f7f6f2;
-  --fg: #121316;
+  --bg: #e9e7e1;
+  --bg-2: #dedbd3;
+  --card: #f4f3ef;
+  --fg: #0b0b0b;
 }
 [data-theme="light"] .surface-invert {
-  --bg: #121316;
-  --bg-2: #191b1f;
-  --card: #1d2024;
-  --fg: #eeede8;
+  --bg: #0b0b0b;
+  --bg-2: #141414;
+  --card: #181818;
+  --fg: #ecebe4;
 }
 .surface-invert {
   background: var(--bg);
@@ -62,9 +65,8 @@
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
 
-  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, -apple-system, sans-serif;
-  /* one family everywhere — "mono" is just the condensed cut of Archivo */
-  --font-mono: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-cond), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* ───────────────── Base ───────────────── */
@@ -86,7 +88,7 @@ html.lenis body {
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-archivo), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;
@@ -97,34 +99,81 @@ body {
   color: var(--accent-ink);
 }
 
-/* ───────────────── Typography — one variable sans (Archivo), width is the contrast ───────────────── */
+/* ───────────────── Typography — athletic, all sans ───────────────── */
 .display {
-  font-weight: 760;
-  font-stretch: 108%;
-  letter-spacing: -0.035em;
-  line-height: 0.92;
+  font-family: var(--font-display), ui-sans-serif, sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 0.84;
 }
-/* highlighted words: same family, pushed to full width + accent */
+/* highlight = stencil cut, like markings sprayed on equipment */
 .hl {
-  font-stretch: 125%;
-  font-weight: 800;
-  letter-spacing: -0.04em;
+  font-family: var(--font-stencil), var(--font-display), sans-serif;
+  font-weight: 900;
+}
+/* on chalk surfaces the accent becomes a taped label instead of yellow-on-white text */
+.surface-invert .hl.text-accent,
+[data-theme="light"] .hl.text-accent {
+  color: var(--accent-ink);
+  background: var(--accent);
+  padding: 0 0.06em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+[data-theme="light"] .surface-invert .hl.text-accent {
+  color: var(--accent);
+  background: none;
+  padding: 0;
 }
 .eyebrow {
-  font-size: 12px;
-  font-weight: 650;
-  font-stretch: 72%;
-  letter-spacing: 0.06em;
+  font-family: var(--font-cond), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
 }
 .font-mono {
-  font-stretch: 78%;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+  font-family: var(--font-cond), sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.06em;
 }
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+/* ───────────────── Gym textures ───────────────── */
+/* caution tape */
+.tape {
+  background: repeating-linear-gradient(-45deg, var(--accent) 0 14px, #0b0b0b 14px 28px);
+}
+.tape-thin {
+  background: repeating-linear-gradient(-45deg, var(--accent) 0 6px, #0b0b0b 6px 12px);
+}
+/* rubber-floor / concrete speckle */
+.concrete {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(color-mix(in oklab, var(--fg) 7%, transparent) 1px, transparent 1.2px),
+    radial-gradient(color-mix(in oklab, var(--fg) 4%, transparent) 1px, transparent 1.2px);
+  background-size: 7px 7px, 11px 11px;
+  background-position: 0 0, 3px 5px;
+}
+/* angular cut corner used for buttons & panels */
+.cut {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+.cut-sm {
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+@keyframes led-blink {
+  50% {
+    opacity: 0.15;
+  }
+}
+.led-glow {
+  filter: drop-shadow(0 0 6px color-mix(in oklab, currentColor 70%, transparent));
 }
 
 /* ───────────────── Utilities ───────────────── */

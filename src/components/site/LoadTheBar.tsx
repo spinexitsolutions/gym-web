@@ -173,13 +173,13 @@ export default function LoadTheBar() {
                   {isClosing ? (
                     <h3 className="hl text-[clamp(32px,4.6vw,60px)] leading-[0.95] text-accent">{m.closing}</h3>
                   ) : step === 0 ? (
-                    <h3 className="text-[clamp(30px,4.2vw,56px)] font-semibold leading-[0.95] tracking-[-0.045em] text-muted">
+                    <h3 className="display text-[clamp(40px,5.4vw,76px)] text-muted">
                       Empty bar. 20 kg.
                       <span className="mt-2 block text-[15px] font-normal tracking-normal">Scroll to load it ↓</span>
                     </h3>
                   ) : (
                     <>
-                      <h3 className="shrink-0 text-[clamp(32px,4.6vw,60px)] font-semibold leading-[0.95] tracking-[-0.045em]">
+                      <h3 className="display shrink-0 text-[clamp(44px,6vw,84px)]">
                         {rules[active]?.title}
                       </h3>
                       <p className="max-w-md text-[15px] leading-relaxed text-muted md:pb-1.5">{rules[active]?.text}</p>

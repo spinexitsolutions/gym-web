@@ -28,7 +28,7 @@ export function Trainers() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -10% 0px" }}
             transition={{ duration: 1, delay: i * 0.08, ease: EASE }}
-            className="group relative aspect-[3/4] w-[72vw] max-w-[340px] shrink-0 snap-center overflow-hidden rounded-[24px] bg-card text-[#f2f0eb] lg:w-auto lg:max-w-none"
+            className="group relative aspect-[3/4] w-[72vw] max-w-[340px] shrink-0 snap-center overflow-hidden rounded-[3px] bg-card text-[#f2f0eb] lg:w-auto lg:max-w-none"
           >
             <motion.img
               src={t.image}
@@ -39,7 +39,7 @@ export function Trainers() {
               viewport={{ amount: 0.8 }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
-            <span className="absolute left-4 top-4 rounded-full bg-black/40 px-3 py-1.5 font-mono text-[11px] backdrop-blur-md">
+            <span className="absolute left-4 top-4 rounded-[2px] bg-black/40 px-3 py-1.5 font-mono text-[11px] backdrop-blur-md">
               {t.experience}
             </span>
             <a
@@ -47,13 +47,13 @@ export function Trainers() {
               target="_blank"
               rel="noreferrer"
               aria-label={`${t.name} on Instagram`}
-              className="absolute right-4 top-4 grid size-9 place-items-center rounded-full bg-white/15 backdrop-blur-md transition-transform hover:scale-110"
+              className="absolute right-4 top-4 grid size-9 place-items-center rounded-[2px] bg-white/15 backdrop-blur-md transition-transform hover:scale-110"
             >
               <SocialIcon name="instagram" />
             </a>
             <div className="absolute inset-x-0 bottom-0 p-5">
               <p className="eyebrow !text-[10px] !text-white/70">{t.role}</p>
-              <h3 className="mt-1.5 text-[26px] font-semibold leading-none tracking-[-0.04em]">{t.name}</h3>
+              <h3 className="display mt-1.5 text-[34px]">{t.name}</h3>
               <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-700 ease-[var(--ease-out)] group-hover:grid-rows-[1fr]">
                 <p className="overflow-hidden text-[13.5px] text-white/70">
                   <span className="block pt-2">{t.speciality}</span>
@@ -88,18 +88,18 @@ export function Schedule() {
 
         <LayoutGroup>
           <div className="no-scrollbar mt-12 overflow-x-auto md:mt-16">
-            <div className="inline-flex rounded-full bg-[color-mix(in_oklab,var(--fg)_7%,transparent)] p-1">
+            <div className="inline-flex rounded-[2px] bg-[color-mix(in_oklab,var(--fg)_7%,transparent)] p-1">
               {DAYS.map((d) => (
                 <button
                   key={d}
                   onClick={() => setDay(d)}
-                  className="relative h-10 min-w-[52px] rounded-full px-4 text-[14px] font-medium tracking-tight md:h-11 md:min-w-[72px]"
+                  className="relative h-10 min-w-[52px] rounded-[2px] px-4 text-[14px] font-medium tracking-tight md:h-11 md:min-w-[72px]"
                   data-cursor="hover"
                 >
                   {day === d && (
                     <motion.span
                       layoutId="day-pill"
-                      className="absolute inset-0 rounded-full bg-fg shadow-sm"
+                      className="absolute inset-0 rounded-[2px] bg-fg shadow-sm"
                       transition={{ type: "spring", stiffness: 420, damping: 36 }}
                     />
                   )}
@@ -127,7 +127,7 @@ export function Schedule() {
               >
                 <span className="font-mono text-[15px] tabular-nums md:text-[17px]">{s.time}</span>
                 <div>
-                  <h3 className="text-[22px] font-semibold leading-tight tracking-[-0.035em] transition-transform duration-500 ease-[var(--ease-out)] group-hover:translate-x-2 md:text-[32px]">
+                  <h3 className="display text-[30px] transition-transform duration-500 ease-[var(--ease-out)] group-hover:translate-x-2 md:text-[44px]">
                     {s.className}
                   </h3>
                   <p className="text-[13px] text-muted md:hidden">
@@ -143,7 +143,7 @@ export function Schedule() {
                     setPrefill({ goal: s.className });
                     scrollTo("#join");
                   }}
-                  className="h-10 rounded-full bg-[color-mix(in_oklab,var(--fg)_8%,transparent)] px-4 text-[13.5px] font-medium transition-colors hover:bg-accent hover:text-accent-ink"
+                  className="h-10 rounded-[2px] bg-[color-mix(in_oklab,var(--fg)_8%,transparent)] px-4 text-[13.5px] font-medium transition-colors hover:bg-accent hover:text-accent-ink"
                   data-cursor="hover"
                 >
                   Book
@@ -175,27 +175,27 @@ export function Pricing() {
           title="Simple plans. Serious results."
           highlight="Serious"
           aside={
-            <div className="inline-flex rounded-full bg-[color-mix(in_oklab,var(--fg)_7%,transparent)] p-1">
+            <div className="inline-flex rounded-[2px] bg-[color-mix(in_oklab,var(--fg)_7%,transparent)] p-1">
               {["Monthly", "Yearly"].map((l, i) => {
                 const on = (i === 1) === yearly;
                 return (
                   <button
                     key={l}
                     onClick={() => setYearly(i === 1)}
-                    className="relative h-11 rounded-full px-5 text-[14px] font-medium"
+                    className="relative h-11 rounded-[2px] px-5 text-[14px] font-medium"
                     data-cursor="hover"
                   >
                     {on && (
                       <motion.span
                         layoutId="bill-pill"
-                        className="absolute inset-0 rounded-full bg-fg"
+                        className="absolute inset-0 rounded-[2px] bg-fg"
                         transition={{ type: "spring", stiffness: 420, damping: 36 }}
                       />
                     )}
                     <span className={`relative ${on ? "text-bg" : "text-fg"}`}>
                       {l}
                       {i === 1 && save > 0 && (
-                        <span className={`ml-2 rounded-full px-2 py-0.5 text-[11px] ${on ? "bg-accent text-accent-ink" : "bg-accent/15 text-accent"}`}>
+                        <span className={`ml-2 rounded-[2px] px-2 py-0.5 text-[11px] ${on ? "bg-accent text-accent-ink" : "bg-accent/15 text-accent"}`}>
                           −{save}%
                         </span>
                       )}
@@ -213,14 +213,14 @@ export function Pricing() {
             return (
               <FadeUp key={p.id} delay={i * 0.1}>
                 <div
-                  className={`relative flex h-full flex-col rounded-[28px] p-7 md:p-8 ${
+                  className={`relative flex h-full flex-col rounded-[3px] p-7 md:p-8 ${
                     p.featured ? "conic-border bg-card shadow-[0_40px_100px_-40px_var(--accent)]" : "bg-card ring-1 ring-inset ring-line"
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <h3 className="text-[22px] font-semibold tracking-[-0.03em]">{p.name}</h3>
+                    <h3 className="display text-[34px]">{p.name}</h3>
                     {p.featured && (
-                      <span className="rounded-full bg-accent px-3 py-1 text-[11.5px] font-semibold text-accent-ink">Most popular</span>
+                      <span className="rounded-[2px] bg-accent px-3 py-1 text-[11.5px] font-semibold text-accent-ink">Most popular</span>
                     )}
                   </div>
                   <p className="mt-2 text-[14.5px] text-muted">{p.description}</p>
@@ -250,7 +250,7 @@ export function Pricing() {
                   <ul className="mt-8 flex flex-1 flex-col gap-3.5 border-t border-line pt-7">
                     {p.features.map((f) => (
                       <li key={f} className="flex items-start gap-3 text-[15px]">
-                        <span className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full ${p.featured ? "bg-accent text-accent-ink" : "bg-faint"}`}>
+                        <span className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-[2px] ${p.featured ? "bg-accent text-accent-ink" : "bg-faint"}`}>
                           <Check className="size-3" strokeWidth={3} />
                         </span>
                         {f}
@@ -297,7 +297,7 @@ export function Bmi() {
 
   return (
     <section id="bmi" data-nav="bmi" className="container-x py-24 md:py-36">
-      <div className="grid overflow-hidden rounded-[32px] bg-card ring-1 ring-inset ring-line lg:grid-cols-2">
+      <div className="grid overflow-hidden rounded-[3px] bg-card ring-1 ring-inset ring-line lg:grid-cols-2">
         <div className="p-7 md:p-12">
           <p className="eyebrow mb-5 flex items-center gap-3">
             <span className="size-2 rounded-[2px] bg-accent" /> Quick check

@@ -53,13 +53,12 @@ const TABS: { id: Tab; label: string; icon: typeof Palette; group: string }[] = 
 ];
 
 const ACCENTS = [
+  { name: "Hazard yellow", hex: "#FFD400" },
+  { name: "Volt", hex: "#C6FF00" },
+  { name: "Plate red", hex: "#FF2A1F" },
+  { name: "Safety orange", hex: "#FF6A00" },
   { name: "Cobalt", hex: "#2D3BFF" },
-  { name: "Signal red", hex: "#FF3B2F" },
-  { name: "Volt", hex: "#C8F031" },
-  { name: "Ultraviolet", hex: "#7A3CFF" },
-  { name: "Teal", hex: "#00A88F" },
-  { name: "Tangerine", hex: "#FF7A1A" },
-  { name: "Graphite", hex: "#2B2D31" },
+  { name: "Chalk", hex: "#ECEBE4" },
 ];
 
 const id = (p: string) => `${p}_${Math.random().toString(36).slice(2, 8)}`;
@@ -245,12 +244,12 @@ function Panel({ tab, c, up }: { tab: Tab; c: SiteContent; up: Up }) {
                       onClick={() => up("brand", { theme: t })}
                       className={`overflow-hidden rounded-2xl text-left ring-2 transition ${c.brand.theme === t ? "ring-[#0a84ff]" : "ring-transparent"}`}
                     >
-                      <div className={`flex h-24 flex-col justify-end p-3 ${t === "dark" ? "bg-[#0e0f11] text-[#eeede8]" : "bg-[#eceae4] text-[#121316]"}`}>
+                      <div className={`flex h-24 flex-col justify-end p-3 ${t === "dark" ? "bg-[#0b0b0b] text-[#ecebe4]" : "bg-[#e9e7e1] text-[#0b0b0b]"}`}>
                         <span className="text-[22px] font-semibold leading-none tracking-[-0.04em]">
                           Aa <span className="hl" style={{ color: c.brand.accent }}>Aa</span>
                         </span>
                       </div>
-                      <p className="bg-[#f5f5f7] px-3 py-2 text-[13px] font-medium capitalize">{t === "dark" ? "Graphite (dark)" : "Chalk (light)"}</p>
+                      <p className="bg-[#f5f5f7] px-3 py-2 text-[13px] font-medium capitalize">{t === "dark" ? "Rubber floor (dark)" : "Chalk wall (light)"}</p>
                     </button>
                   ))}
                 </div>

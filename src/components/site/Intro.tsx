@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import type { IntroSettings } from "@/lib/types";
 import { EASE, EASE_IO } from "./primitives";
+import Led from "./Led";
 
 const KEY = "gym_intro_seen";
 
@@ -82,7 +83,7 @@ export default function Intro({
         >
           {/* accent curtain beneath */}
           <motion.div
-            className="absolute inset-0 bg-accent"
+            className="tape absolute inset-0"
             initial={{ clipPath: "inset(0 0 0 0)" }}
             exit={{ clipPath: "inset(0 0 100% 0)", transition: { duration: 1, ease: EASE_IO, delay: 0.12 } }}
           />
@@ -122,9 +123,7 @@ export default function Intro({
                   </div>
                 </div>
                 <div className="absolute inset-x-5 bottom-6 flex items-end justify-between md:inset-x-10 md:bottom-10">
-                  <span className="display font-mono text-[clamp(64px,18vw,220px)] tabular-nums leading-[0.8] tracking-[-0.06em]">
-                    {String(count).padStart(3, "0")}
-                  </span>
+                  <Led text={String(count).padStart(3, "0")} className="h-[clamp(70px,16vw,190px)]" />
                   <span className="eyebrow mb-2 hidden text-right !text-[#f2f0eb]/50 sm:block">
                     {settings.words[wordIdx] ?? "Loading"}
                     <br />

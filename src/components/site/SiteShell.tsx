@@ -23,7 +23,6 @@ export default function SiteShell({ content, children }: { content: SiteContent;
   const [ready, setReady] = useState(!content.intro.enabled);
   const [lenis, setLenis] = useState<Lenis | null>(null);
   const [prefill, setPrefill] = useState<{ goal?: string; plan?: string }>({});
-  const [bar, setBar] = useState(content.brand.announcement.enabled);
   const [showFab, setShowFab] = useState(false);
 
   // smooth scroll
@@ -97,35 +96,7 @@ export default function SiteShell({ content, children }: { content: SiteContent;
           />
         )}
 
-        <AnimatePresence>
-          {bar && (
-            <motion.div
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.5 }}
-              className="relative z-[60] h-11 overflow-hidden bg-accent text-accent-ink"
-            >
-              <a href={content.brand.announcement.link || "#join"} className="marquee flex h-full items-center overflow-hidden">
-                <div className="marquee-track" style={{ "--marquee-speed": "40s" } as React.CSSProperties}>
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <span key={i} className="flex items-center gap-6 whitespace-nowrap pr-6 text-[13px] font-medium tracking-tight">
-                      {content.brand.announcement.text}
-                      <span aria-hidden className="size-1.5 rotate-45 bg-accent-ink/70" />
-                    </span>
-                  ))}
-                </div>
-              </a>
-              <button
-                onClick={() => setBar(false)}
-                aria-label="Dismiss"
-                className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-full bg-accent shadow-[-12px_0_12px_var(--accent)]"
-              >
-                <X className="size-3.5" />
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <Navbar announcement={bar} />
+        <Navbar />
         {content.brand.cursor && <Cursor />}
 
         <main>{children}</main>
@@ -140,7 +111,7 @@ export default function SiteShell({ content, children }: { content: SiteContent;
             initial={{ scale: 0 }}
             animate={{ scale: ready && showFab ? 1 : 0 }}
             transition={{ type: "spring", stiffness: 260, damping: 18 }}
-            className="fixed bottom-6 right-6 z-[70] hidden size-14 place-items-center rounded-full bg-[#25D366] text-white shadow-[0_14px_40px_-10px_rgba(37,211,102,0.7)] md:grid"
+            className="fixed bottom-6 right-6 z-[70] hidden size-14 place-items-center rounded-[4px] bg-[#25D366] text-white shadow-[0_14px_40px_-10px_rgba(37,211,102,0.7)] md:grid"
             data-cursor="hover"
           >
             <SocialIcon name="whatsapp" className="size-6" />

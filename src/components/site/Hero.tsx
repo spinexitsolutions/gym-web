@@ -1,361 +1,266 @@
 "use client";
 
 import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowUpRight, Users } from "lucide-react";
-import type { ScheduleSlot } from "@/lib/types";
+import { useEffect, useRef, useState } from "react";
 import { useSite } from "./context";
-import { EASE, EASE_IO, Magnetic, PillButton, useIsOpen } from "./primitives";
+import Led from "./Led";
+import { EASE, EASE_IO, Magnetic, PillButton } from "./primitives";
 
 /*
- * Hero — editorial, photo-in-type layout.
- * No full-bleed stock photo: the headline itself carries the imagery
- * through capsule "windows" that open between the words and cycle
- * through the programs. Below it, two live utility cards
- * (floor busyness + next class countdown) make it feel like a real club.
+ * Hero = a live interval timer.
+ * The red LED clock runs a real EMOM-style loop (work → rest → next round).
+ * Every round is a station: the photo, program name and tags change with it.
  */
 
-const DAYS: ScheduleSlot["day"][] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const WORK = 20;
+const REST = 10;
 
 export default function Hero() {
   const { content, ready } = useSite();
-  const { hero, programs, contact } = content;
-  const ref = useRef<HTMLElement>(null);
-  const status = useIsOpen(contact.openHour, contact.closeHour);
+  const { hero, programs, stats } = content;
+  const stations = programs;
+  const n = Math.max(1, stations.length);
 
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const row1X = useTransform(scrollYProgress, [0, 1], ["0%", "-9%"]);
-  const row2X = useTransform(scrollYProgress, [0, 1], ["0%", "9%"]);
-  const fade = useTransform(scrollYProgress, [0.35, 0.85], [1, 0]);
-
-  // pill A cycles through programs, pill B holds the brand image
-  const reel = useMemo(() => programs.filter((p) => p.image), [programs]);
-  const [i, setI] = useState(0);
+  const [t, setT] = useState(0);
   useEffect(() => {
-    if (!ready || reel.length < 2) return;
-    const t = setInterval(() => setI((n) => (n + 1) % reel.length), 2600);
-    return () => clearInterval(t);
-  }, [ready, reel.length]);
+    if (!ready) return;
+    const i = setInterval(() => setT((x) => x + 1), 1000);
+    return () => clearInterval(i);
+  }, [ready]);
+
+  const cycle = WORK + REST;
+  const round = Math.floor(t / cycle) % n;
+  const inCycle = t % cycle;
+  const working = inCycle < WORK;
+  const remaining = working ? WORK - inCycle : cycle - inCycle;
+  const station = stations[round];
+  const next = stations[(round + 1) % n];
+  const pct = working ? (inCycle + 1) / WORK : (inCycle - WORK + 1) / REST;
+
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const photoY = useTransform(scrollYProgress, [0, 1], ["0%", "12%"]);
+  const headY = useTransform(scrollYProgress, [0, 1], ["0%", "-25%"]);
 
   const [line1 = "", line2 = ""] = hero.lines;
   const hl = new Set(hero.highlight.toLowerCase().split(/\s+/).filter(Boolean));
 
   return (
-    <section
-      ref={ref}
-      id="top"
-      data-nav="top"
-      className="relative flex flex-col overflow-hidden pb-10 pt-6 md:pb-14 md:pt-28"
-    >
-      {/* meta row */}
-      <motion.div
-        className="container-x flex items-center justify-between gap-4"
-        initial={{ opacity: 0 }}
-        animate={ready ? { opacity: 1 } : undefined}
-        transition={{ duration: 1, delay: 0.2 }}
-      >
-        <p className="eyebrow">
-          <span className="text-fg md:hidden">{content.brand.name}</span>
-          <span className="hidden md:inline">{hero.eyebrow}</span>
-        </p>
-        <span className="flex shrink-0 items-center gap-2 rounded-full bg-card px-3 py-1.5 text-[12px] font-medium ring-1 ring-inset ring-line">
-          <span className={`live-dot size-1.5 rounded-full ${status?.open ? "bg-[#1fbf5c]" : "bg-[#9a9a9a]"}`} />
-          {status?.label ?? " "}
-        </span>
-      </motion.div>
-
-      {/* headline with photo capsules */}
-      <motion.h1
-        style={{ opacity: fade }}
-        className="display mt-8 px-5 text-[clamp(44px,13vw,96px)] uppercase leading-[0.86] tracking-[-0.04em] md:mt-10 md:px-10 md:text-[clamp(56px,8.4vw,172px)] [font-stretch:118%]"
-        aria-label={hero.lines.join(" ")}
-      >
-        <motion.span style={{ x: row1X }} className="flex flex-wrap items-center gap-x-[0.18em] gap-y-[0.12em]">
-          <Words text={line1} hl={hl} play={ready} delay={0.35} />
-          <Capsule play={ready} delay={0.75} className="block h-[26vw] w-full md:inline-block md:h-[0.78em] md:w-[2.9em]">
+    <section ref={ref} id="top" data-nav="top" className="concrete relative overflow-hidden pb-12 pt-[84px] md:pb-16 md:pt-[124px]">
+      <div className="mx-auto grid max-w-[1600px] gap-4 px-3 md:px-5 lg:grid-cols-12 lg:gap-5">
+        {/* ── station photo ── */}
+        <motion.div
+          className="relative h-[62svh] min-h-[420px] overflow-hidden bg-[#141414] lg:col-span-7 lg:h-[calc(100svh-170px)] lg:min-h-[560px]"
+          initial={{ clipPath: "inset(0 100% 0 0)" }}
+          animate={ready ? { clipPath: "inset(0 0% 0 0)" } : undefined}
+          transition={{ duration: 1.2, ease: EASE_IO, delay: 0.15 }}
+        >
+          <motion.div className="absolute inset-0" style={{ y: photoY }}>
             <AnimatePresence initial={false}>
-              {reel[i] && (
-                <motion.img
-                  key={reel[i].id}
-                  src={reel[i].image}
-                  alt=""
-                  className="absolute inset-0 h-full w-full object-cover"
-                  initial={{ opacity: 0, scale: 1.12 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 1.1, ease: EASE }}
-                />
-              )}
+              <motion.img
+                key={station?.id ?? "hero"}
+                src={station?.image ?? hero.image}
+                alt={station?.title ?? ""}
+                className="absolute inset-0 h-[112%] w-full object-cover grayscale contrast-[1.2]"
+                initial={{ clipPath: "inset(0 0 0 100%)", scale: 1.15 }}
+                animate={{ clipPath: "inset(0 0 0 0%)", scale: 1 }}
+                exit={{ opacity: 0.6 }}
+                transition={{ duration: 0.9, ease: EASE_IO }}
+              />
             </AnimatePresence>
-            <span className="absolute bottom-[10%] left-[5%] flex items-center gap-2 rounded-full bg-black/45 py-1 pl-1.5 pr-3 text-[11px] font-semibold normal-case tracking-normal text-white backdrop-blur-md [font-stretch:100%] md:bottom-[12%] md:left-[4%] md:text-[12px]">
-              <span className="grid size-5 place-items-center rounded-full bg-accent text-[10px] text-accent-ink">
-                {String((i % Math.max(1, reel.length)) + 1).padStart(2, "0")}
-              </span>
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.span key={reel[i]?.id} initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.35 }}>
-                  {reel[i]?.title}
-                </motion.span>
-              </AnimatePresence>
+          </motion.div>
+          {/* rest = lights dim */}
+          <motion.div className="absolute inset-0 bg-black" animate={{ opacity: working ? 0.2 : 0.6 }} transition={{ duration: 0.6 }} />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent" />
+          {/* go flash */}
+          <AnimatePresence>
+            {ready && inCycle === 0 && (
+              <motion.div key={`flash-${t}`} className="absolute inset-0 bg-accent mix-blend-multiply" initial={{ opacity: 0.55 }} animate={{ opacity: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.9 }} />
+            )}
+          </AnimatePresence>
+
+          {/* station label */}
+          <div className="absolute left-4 right-4 top-4 flex items-start justify-between font-mono text-[13px] uppercase text-white md:left-6 md:right-6 md:top-6">
+            <span className="bg-black/70 px-2.5 py-1.5">
+              Station <span className="text-accent">{String(round + 1).padStart(2, "0")}</span> / {String(n).padStart(2, "0")}
             </span>
-          </Capsule>
-        </motion.span>
-
-        <motion.span style={{ x: row2X }} className="mt-[0.06em] flex flex-wrap items-center gap-x-[0.18em] md:justify-end">
-          <Capsule play={ready} delay={0.95} className="hidden h-[0.78em] w-[1.9em] md:inline-block">
-            <motion.img
-              src={hero.image}
-              alt=""
-              className="absolute inset-0 h-full w-full object-cover"
-              initial={{ scale: 1.3 }}
-              animate={ready ? { scale: 1 } : undefined}
-              transition={{ duration: 1.8, ease: EASE, delay: 0.95 }}
-            />
-          </Capsule>
-          <Words text={line2} hl={hl} play={ready} delay={0.5} />
-        </motion.span>
-      </motion.h1>
-
-      {/* lower band */}
-      <div className="container-x mt-10 grid gap-3 md:mt-20 md:grid-cols-12 md:items-end md:gap-4">
-        <Rise play={ready} delay={1.1} className="md:col-span-5 md:pr-8">
-          <p className="max-w-[34ch] text-[17px] leading-[1.45] text-muted md:text-[18px]">{hero.subtitle}</p>
-          <div className="mt-6 flex flex-wrap gap-2.5">
-            <Magnetic>
-              <PillButton href="#join">{hero.primaryCta}</PillButton>
-            </Magnetic>
-            <a
-              href="#programs"
-              className="group inline-flex h-12 items-center gap-2 rounded-full px-5 text-[15px] font-medium ring-1 ring-inset ring-line transition-colors hover:bg-fg hover:text-bg"
-              data-cursor="hover"
-            >
-              {hero.secondaryCta}
-              <ArrowUpRight className="size-4 transition-transform duration-500 group-hover:rotate-45" />
-            </a>
+            <span className="hidden gap-1.5 sm:flex">
+              {station?.tags.slice(0, 3).map((tag) => (
+                <span key={tag} className="border border-white/30 bg-black/40 px-2 py-1 text-[11.5px]">
+                  {tag}
+                </span>
+              ))}
+            </span>
           </div>
-        </Rise>
-        <div className="grid grid-cols-2 gap-3 md:col-span-7 md:gap-4">
-          <Rise play={ready} delay={1.25}>
-            <FloorCard open={!!status?.open} openHour={contact.openHour} closeHour={contact.closeHour} />
-          </Rise>
-          <Rise play={ready} delay={1.35}>
-            <NextClassCard />
-          </Rise>
+
+          {/* headline on the photo */}
+          <motion.h1
+            style={{ y: headY }}
+            className="display absolute bottom-6 left-4 right-4 text-[clamp(60px,17vw,120px)] text-white md:bottom-9 md:left-6 lg:text-[clamp(96px,10.2vw,184px)]"
+            aria-label={hero.lines.join(" ")}
+          >
+            {[line1, line2].map((line, li) => (
+              <span key={li} className="block">
+                {line
+                  .split(" ")
+                  .filter(Boolean)
+                  .map((w, k) => (
+                    <span key={k} className="mr-[0.18em] inline-block overflow-hidden align-bottom last:mr-0">
+                      <motion.span
+                        className={`inline-block ${hl.has(w.toLowerCase()) ? "hl text-accent" : ""}`}
+                        initial={{ y: "102%" }}
+                        animate={ready ? { y: "0%" } : undefined}
+                        transition={{ duration: 0.9, ease: EASE, delay: 0.55 + li * 0.12 + k * 0.06 }}
+                      >
+                        {w}
+                      </motion.span>
+                    </span>
+                  ))}
+              </span>
+            ))}
+          </motion.h1>
+          <div className="tape absolute bottom-0 right-0 h-3 w-1/3" />
+        </motion.div>
+
+        {/* ── right column: timer + pitch ── */}
+        <div className="flex flex-col gap-4 lg:col-span-5 lg:gap-5">
+          <motion.div
+            className="relative border border-white/10 bg-black p-4 text-[#ecebe4] md:p-6"
+            initial={{ opacity: 0, y: 30 }}
+            animate={ready ? { opacity: 1, y: 0 } : undefined}
+            transition={{ duration: 0.9, ease: EASE, delay: 0.35 }}
+          >
+            {/* screws */}
+            {["left-2 top-2", "right-2 top-2", "left-2 bottom-2", "right-2 bottom-2"].map((p) => (
+              <span key={p} className={`absolute ${p} grid size-2.5 place-items-center rounded-full bg-white/15`}>
+                <span className="h-px w-1.5 rotate-45 bg-black/70" />
+              </span>
+            ))}
+
+            <div className="flex items-center justify-between px-1 font-mono text-[12px] uppercase text-white/45">
+              <span>{content.brand.name} interval</span>
+              <span>EMOM · {n} rds</span>
+            </div>
+
+            <div className="mt-3 flex items-center justify-between gap-4 border border-white/[0.06] bg-[#050505] px-4 py-4 md:px-6 md:py-6">
+              <Led
+                text={`00:${String(remaining).padStart(2, "0")}`}
+                color={working ? "var(--led)" : "var(--led-go)"}
+                className="h-[clamp(64px,17vw,96px)] lg:h-[clamp(72px,7vw,124px)]"
+                label={`${remaining} seconds ${working ? "work" : "rest"}`}
+              />
+              <div className="flex flex-col items-end gap-2">
+                <span className="px-2.5 py-1 font-mono text-[14px] uppercase text-black transition-colors" style={{ background: working ? "var(--led)" : "var(--led-go)" }}>
+                  {working ? "Work" : "Rest"}
+                </span>
+                <span className="font-mono text-[12px] uppercase text-white/45">
+                  Rd {round + 1}/{n}
+                </span>
+              </div>
+            </div>
+
+            {/* phase progress */}
+            <div className="mt-3 h-1.5 bg-white/[0.06]">
+              <div
+                className="h-full transition-[width] duration-1000 ease-linear"
+                style={{ width: `${Math.min(100, pct * 100)}%`, background: working ? "var(--led)" : "var(--led-go)" }}
+              />
+            </div>
+
+            <div className="mt-5 flex items-end justify-between gap-4">
+              <div className="min-w-0">
+                <p className="font-mono text-[12px] uppercase text-white/45">{working ? "Now training" : "Up next"}</p>
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={`${working}-${working ? station?.id : next?.id}`}
+                    className="display mt-1 truncate text-[clamp(40px,10vw,64px)]"
+                    initial={{ y: 24, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -24, opacity: 0 }}
+                    transition={{ duration: 0.45, ease: EASE }}
+                  >
+                    {(working ? station?.title : next?.title) ?? "Open gym"}
+                  </motion.p>
+                </AnimatePresence>
+              </div>
+              <div className="flex shrink-0 gap-1">
+                {stations.map((s, k) => (
+                  <span
+                    key={s.id}
+                    className="h-8 w-2.5 transition-colors duration-500"
+                    style={{ background: k < round ? "#ecebe4" : k === round ? "var(--accent)" : "rgba(255,255,255,0.1)" }}
+                  />
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="flex flex-1 flex-col justify-between gap-6 border border-line p-4 md:p-6"
+            initial={{ opacity: 0, y: 30 }}
+            animate={ready ? { opacity: 1, y: 0 } : undefined}
+            transition={{ duration: 0.9, ease: EASE, delay: 0.5 }}
+          >
+            <div>
+              <p className="eyebrow flex items-center gap-2">
+                <span className="tape-thin h-2.5 w-8" /> {hero.eyebrow}
+              </p>
+              <p className="mt-4 max-w-[40ch] text-[17px] leading-[1.5] text-muted md:text-[18px]">{hero.subtitle}</p>
+            </div>
+            <div className="grid grid-cols-3 border-y border-line">
+              {stats.slice(0, 3).map((s, k) => (
+                <div key={s.id} className={`py-3 ${k ? "border-l border-line pl-3" : ""}`}>
+                  <p className="display text-[clamp(28px,7vw,40px)]">
+                    {s.value.toLocaleString("en-IN")}
+                    <span className="text-accent">{s.suffix.trim().length > 2 ? "" : s.suffix}</span>
+                  </p>
+                  <p className="font-mono text-[11.5px] uppercase text-muted">{s.label}</p>
+                </div>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Magnetic>
+                <PillButton href="#join">{hero.primaryCta}</PillButton>
+              </Magnetic>
+              <PillButton href="#programs" variant="glass">
+                {hero.secondaryCta}
+              </PillButton>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
   );
 }
 
-/* ── pieces ─────────────────────────────────────────────── */
-
-function Words({ text, hl, play, delay }: { text: string; hl: Set<string>; play: boolean; delay: number }) {
-  return (
-    <>
-      {text.split(" ").filter(Boolean).map((w, k) => (
-        <span key={k} className="inline-block overflow-hidden py-[0.04em]">
-          <motion.span
-            className={`inline-block will-change-transform ${hl.has(w.toLowerCase()) ? "text-accent" : ""}`}
-            initial={{ y: "105%" }}
-            animate={play ? { y: "0%" } : undefined}
-            transition={{ duration: 1.1, ease: EASE, delay: delay + k * 0.08 }}
-          >
-            {w}
-          </motion.span>
-        </span>
-      ))}
-    </>
-  );
-}
-
-function Capsule({ children, play, delay, className }: { children: React.ReactNode; play: boolean; delay: number; className: string }) {
-  return (
-    <motion.span
-      className={`relative shrink-0 overflow-hidden rounded-[999px] bg-bg-2 align-middle ${className}`}
-      initial={{ clipPath: "inset(0% 50% 0% 50% round 999px)" }}
-      animate={play ? { clipPath: "inset(0% 0% 0% 0% round 999px)" } : undefined}
-      transition={{ duration: 1.3, ease: EASE_IO, delay }}
-    >
-      {children}
-    </motion.span>
-  );
-}
-
-function Rise({ children, play, delay, className = "" }: { children: React.ReactNode; play: boolean; delay: number; className?: string }) {
-  return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y: 24 }}
-      animate={play ? { opacity: 1, y: 0 } : undefined}
-      transition={{ duration: 1, ease: EASE, delay }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-/** Rough crowd curve: peaks around 7:00 and 19:00. */
-function busyness(h: number) {
-  const g = (c: number, w: number) => Math.exp(-((h - c) ** 2) / (2 * w * w));
-  return Math.round(14 + 72 * Math.max(g(7, 1.4), g(19, 1.8), 0.45 * g(13, 1.5)));
-}
-
-function FloorCard({ open, openHour, closeHour }: { open: boolean; openHour: number; closeHour: number }) {
-  const [now, setNow] = useState<{ pct: number; quiet: number } | null>(null);
-  useEffect(() => {
-    const calc = () => {
-      const d = new Date();
-      const h = d.getHours() + d.getMinutes() / 60;
-      let quiet = openHour + 1;
-      let best = 101;
-      for (let t = Math.max(Math.ceil(h), openHour); t < closeHour; t++) {
-        const b = busyness(t);
-        if (b < best) {
-          best = b;
-          quiet = t;
-        }
-      }
-      setNow({ pct: open ? busyness(h) : 0, quiet });
-    };
-    calc();
-    const t = setInterval(calc, 60_000);
-    return () => clearInterval(t);
-  }, [open, openHour, closeHour]);
-
-  const pct = now?.pct ?? 0;
-  const bars = 12;
-  const lit = Math.round((pct / 100) * bars);
-  const label = !open ? "Closed" : pct < 35 ? "Quiet" : pct < 65 ? "Steady" : "Busy";
-
-  return (
-    <div className="flex h-full flex-col justify-between rounded-[22px] bg-card p-4 ring-1 ring-inset ring-line md:p-5">
-      <div className="flex items-start justify-between gap-2">
-        <p className="eyebrow">Floor right now</p>
-        <span className="text-[12px] font-semibold text-accent">{label}</span>
-      </div>
-      <div className="mt-5">
-        <p className="text-[34px] font-bold leading-none tracking-[-0.04em] tabular-nums md:text-[44px]">
-          {pct}
-          <span className="text-[16px] font-semibold text-muted">%</span>
-        </p>
-        <div className="mt-3 flex h-7 items-end gap-[3px]">
-          {Array.from({ length: bars }).map((_, k) => (
-            <motion.span
-              key={k}
-              className="flex-1 rounded-[3px]"
-              initial={{ scaleY: 0.2 }}
-              animate={{ scaleY: 1, backgroundColor: k < lit ? "var(--accent)" : "var(--faint)" }}
-              transition={{ delay: 1.4 + k * 0.04, duration: 0.6, ease: EASE }}
-              style={{ height: `${40 + (k / bars) * 60}%`, originY: 1 }}
-            />
-          ))}
-        </div>
-        <p className="mt-3 text-[12.5px] text-muted">
-          {now ? `Quietest today: ${String(now.quiet).padStart(2, "0")}:00` : " "}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function NextClassCard() {
-  const { content, scrollTo, setPrefill } = useSite();
-  const [next, setNext] = useState<{ slot: ScheduleSlot; mins: number } | null>(null);
-
-  useEffect(() => {
-    const find = () => {
-      const d = new Date();
-      const nowMin = d.getHours() * 60 + d.getMinutes();
-      for (let off = 0; off < 7; off++) {
-        const day = DAYS[(d.getDay() + off) % 7];
-        const slots = content.schedule
-          .filter((s) => s.day === day)
-          .map((s) => {
-            const [hh, mm] = s.time.split(":").map(Number);
-            return { s, start: hh * 60 + (mm || 0) };
-          })
-          .filter((x) => off > 0 || x.start > nowMin)
-          .sort((a, b) => a.start - b.start);
-        if (slots[0]) {
-          setNext({ slot: slots[0].s, mins: off * 1440 + slots[0].start - nowMin });
-          return;
-        }
-      }
-      setNext(null);
-    };
-    find();
-    const t = setInterval(find, 30_000);
-    return () => clearInterval(t);
-  }, [content.schedule]);
-
-  const when = next
-    ? next.mins < 60
-      ? `in ${next.mins} min`
-      : next.mins < 1440
-        ? `in ${Math.floor(next.mins / 60)}h ${next.mins % 60}m`
-        : `${next.slot.day} · ${next.slot.time}`
-    : "";
-
-  return (
-    <div className="flex h-full flex-col justify-between rounded-[22px] bg-fg p-4 text-bg md:p-5">
-      <div className="flex items-start justify-between gap-2">
-        <p className="eyebrow !text-[color-mix(in_oklab,var(--bg)_60%,transparent)]">Next class</p>
-        <span className="font-mono text-[12px] tabular-nums">{next?.slot.time}</span>
-      </div>
-      <div className="mt-5">
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={next?.slot.id ?? "none"}
-            initial={{ y: 12, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -12, opacity: 0 }}
-            className="text-[22px] font-bold leading-[1.02] tracking-[-0.035em] [font-stretch:110%] md:text-[28px]"
-          >
-            {next?.slot.className ?? "Open gym"}
-          </motion.p>
-        </AnimatePresence>
-        <p className="mt-1.5 flex items-center gap-1.5 text-[12.5px] opacity-60">
-          <Users className="size-3.5" /> {next ? `${next.slot.coach} · ${next.slot.spots} spots` : "No classes scheduled"}
-        </p>
-        <button
-          onClick={() => {
-            if (next) setPrefill({ goal: next.slot.className });
-            scrollTo("#join");
-          }}
-          className="mt-4 flex h-10 w-full items-center justify-between rounded-full bg-accent pl-4 pr-1.5 text-[13px] font-semibold text-accent-ink transition-transform active:scale-[0.98]"
-          data-cursor="hover"
-        >
-          <span className="tabular-nums">{when || "Book a trial"}</span>
-          <span className="grid size-7 place-items-center rounded-full bg-accent-ink text-accent">
-            <ArrowUpRight className="size-3.5" />
-          </span>
-        </button>
-      </div>
-    </div>
-  );
-}
-
-/* ── Ticker under the hero ─────────────────────────────── */
+/* ── caution-tape ticker under the hero ─────────────────── */
 export function Ticker() {
   const { content } = useSite();
   const items = content.hero.marquee;
   if (!items.length) return null;
   const row = [...items, ...items];
   return (
-    <div className="marquee relative mt-4 overflow-hidden bg-accent py-4 text-accent-ink md:py-5">
-      <div className="marquee-track" style={{ "--marquee-speed": "50s" } as React.CSSProperties}>
-        {[0, 1].map((k) => (
-          <div key={k} className="flex shrink-0 items-center">
-            {row.map((t, n) => (
-              <span key={n} className="flex items-center">
-                <span className="px-5 text-[clamp(22px,3.4vw,44px)] font-extrabold uppercase tracking-[-0.03em] [font-stretch:120%] md:px-8">
-                  {t}
+    <div className="relative overflow-hidden bg-accent text-accent-ink">
+      <div className="tape h-2" />
+      <div className="marquee overflow-hidden py-3 md:py-4">
+        <div className="marquee-track" style={{ "--marquee-speed": "45s" } as React.CSSProperties}>
+          {[0, 1].map((k) => (
+            <div key={k} className="flex shrink-0 items-center">
+              {row.map((t, i) => (
+                <span key={i} className="flex items-center">
+                  <span className={`display px-5 text-[clamp(30px,4.6vw,60px)] md:px-8 ${i % 2 ? "hl" : ""}`}>{t}</span>
+                  <svg viewBox="0 0 24 12" className="h-4 w-8" aria-hidden>
+                    <rect x="0" y="5" width="24" height="2" fill="currentColor" />
+                    <rect x="3" y="0" width="3" height="12" fill="currentColor" />
+                    <rect x="18" y="0" width="3" height="12" fill="currentColor" />
+                  </svg>
                 </span>
-                <span className="size-2.5 rotate-45 bg-accent-ink/80" />
-              </span>
-            ))}
-          </div>
-        ))}
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
+      <div className="tape h-2" />
     </div>
   );
 }
